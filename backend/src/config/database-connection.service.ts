@@ -7,15 +7,19 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
     return {
       name: 'default',
       type: 'postgres',
-      host: "172.20.0.2",
+      host: '172.20.0.2',
       port: 5432,
-      username: "admin",
-      password: "admin",
-      database: "postgres",
+      username: 'admin',
+      password: 'admin',
+      database: 'postgres',
       synchronize: true,
       dropSchema: true,
-      logging: true,
+      logging: false,
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
+      cli: {
+        migrationsDir: __dirname + '/../migrations',
+        entitiesDir: __dirname + '/../**/*.entity.{js,ts}',
+      },
     };
   }
 }
