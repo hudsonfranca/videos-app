@@ -7,7 +7,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
     return {
       name: 'default',
       type: 'postgres',
-      host: '172.20.0.2',
+      host: '172.20.0.3',
       port: 5432,
       username: 'admin',
       password: 'admin',

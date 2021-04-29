@@ -28,7 +28,7 @@ export class VideoService {
       originalname: file.originalname,
       url: `${hostUrl}${file.filename}`,
       filename: file.filename,
-      videoTags: videoTags,
+      videotags: videoTags,
     });
 
     videoEntity.user = user;
@@ -53,6 +53,14 @@ export class VideoService {
     return video;
   }
 
+  async findVideos() {
+    const video = await this.videoRepository.find();
+
+    if (!video) throw new BadRequestException('Este video não existe');
+
+    return video;
+  }
+
   async delete(id: string) {
     const video = await this.findById(id);
 
@@ -62,8 +70,8 @@ export class VideoService {
   async videosByTag(tags: string[]) {
     const videos = await this.videoRepository
       .createQueryBuilder('video')
-      .innerJoinAndSelect('video.videoTags', 'video__tag')
-      .where('video.videoTags IN (:...tags)', { tags })
+      .leftJoinAndSelect('video.videotags', 'video__tag')
+      .where('video__tag.tag IN (:...tags)', { tags })
       .getMany();
 
     return videos;

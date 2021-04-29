@@ -22,6 +22,6 @@ export class Video_Tag {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Video, (video) => video.videoTags)
+  @ManyToOne(() => Video, (video) => video.videotags)
   video: Video;
 }

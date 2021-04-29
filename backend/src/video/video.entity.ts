@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -38,5 +39,5 @@ export class Video {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  videoTags: Video_Tag[];
+  videotags: Video_Tag[];
 }

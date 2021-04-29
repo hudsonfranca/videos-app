@@ -67,4 +67,19 @@ export class VideoController {
     const { affected } = await this.videoService.delete(id);
     return affected;
   }
+
+  @Get()
+  async videosByTag(@Body() tags: any) {
+    console.log(tags);
+    const videos = await this.videoService.videosByTag(tags.tags);
+
+    return videos;
+  }
+
+  @Get('/index/i')
+  async findVideos() {
+    const videos = await this.videoService.findVideos();
+
+    return videos;
+  }
 }
