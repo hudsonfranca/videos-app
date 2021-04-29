@@ -21,7 +21,7 @@ const connectionOptions: ConnectionOptions = {
   database: config.database || 'vivubook-dev',
   entities: [User, Video],
   // We are using migrations, synchronize should be set to false.
-  synchronize: false,
+  synchronize: true,
   dropSchema: false,
   // Run migrations automatically,
   // you can disable this if you prefer running migration manually.

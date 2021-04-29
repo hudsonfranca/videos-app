@@ -4,14 +4,16 @@ import { DatabaseConnectionService } from './config/database-connection.service'
 import { UserModule } from './user/user.module';
 import { VideoModule } from './video/video.module';
 import { AuthModule } from './auth/auth.module';
+import { VideoTagModule } from './video-tag/video-tag.module';
 import * as connectionOptions from './ormconfig';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(connectionOptions),
+    TypeOrmModule.forRootAsync({ useClass: DatabaseConnectionService }),
     UserModule,
     VideoModule,
     AuthModule,
+    VideoTagModule,
   ],
   controllers: [],
   providers: [],

@@ -13,7 +13,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
       password: 'admin',
       database: 'postgres',
       synchronize: true,
-      dropSchema: true,
+      dropSchema: false,
       logging: false,
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
       cli: {

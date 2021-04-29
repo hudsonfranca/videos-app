@@ -1,5 +1,14 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import {User}from '../user/user.entity'
+import { Video_Tag } from 'src/video-tag/video-tag.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Video {
@@ -21,6 +30,13 @@ export class Video {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, user => user.videos)
-    user: User;
+  @ManyToOne(() => User, (user) => user.videos)
+  user: User;
+
+  @OneToMany(() => Video_Tag, (videoTag) => videoTag.video, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  videoTags: Video_Tag[];
 }

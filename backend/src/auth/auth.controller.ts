@@ -28,6 +28,6 @@ export class AuthController {
 
     req.headers.authorization = `Bearer ${access_token}`;
 
-    return { message: 'OK' };
+    return access_token;
   }
 }
