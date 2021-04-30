@@ -34,9 +34,9 @@ export class VideoService {
     videoEntity.user = user;
 
     try {
-      const savedVideos = await this.videoRepository.save(videoEntity);
+      const savedVideo = await this.videoRepository.save(videoEntity);
 
-      return savedVideos;
+      return savedVideo;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(

@@ -1,9 +1,9 @@
+import { Comment } from 'src/comment/comment.entity';
 import { Video_Tag } from 'src/video-tag/video-tag.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -40,4 +40,11 @@ export class Video {
     onUpdate: 'CASCADE',
   })
   videotags: Video_Tag[];
+
+  @OneToMany(() => Comment, (comment) => comment.video, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  comments: Comment[];
 }

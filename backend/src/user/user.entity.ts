@@ -1,3 +1,4 @@
+import { Comment } from 'src/comment/comment.entity';
 import { Video } from 'src/video/video.entity';
 import {
   Column,
@@ -30,4 +31,7 @@ export class User {
 
   @OneToMany(() => Video, (video) => video.user)
   videos: Video[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 }
