@@ -16,12 +16,23 @@ export class CommentService {
     private videoService: VideoService,
   ) {}
 
-  async createComment(comment: string, videoId: string, user: User) {
+  async createComment(
+    comment: string,
+    videoId: string,
+    user: User,
+    parentId?: string,
+  ) {
     const video = await this.videoService.findById(videoId);
+
+    let parentComment: Comment;
+
+    if (parentId) parentComment = await this.commentById(parentId);
+
     const commentEntity = this.commentRepository.create({
       comment,
       video,
       user,
+      parent: parentComment ? parentComment : null,
     });
 
     try {
@@ -42,6 +53,19 @@ export class CommentService {
     if (!comment) throw new BadRequestException('Este commentário não existe.');
 
     return comment;
+  }
+
+  async commentsByVideo(videoId: string) {
+    const comments = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.children', 'children')
+      .where('comment.videoId = :videoId', { videoId })
+      .getMany();
+
+    if (!comments)
+      throw new BadRequestException('Este commentário não existe.');
+
+    return comments;
   }
 
   async deleteComment(id: string) {

@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -28,4 +29,16 @@ export class Comment {
 
   @ManyToOne(() => Video, (video) => video.comments)
   video: Video;
+
+  @ManyToOne((type) => Comment, (comment) => comment.children, {
+    nullable: true,
+  })
+  parent: Comment;
+
+  @OneToMany((type) => Comment, (comment) => comment.parent, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  children: Comment[];
 }

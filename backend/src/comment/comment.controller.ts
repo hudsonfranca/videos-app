@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
@@ -17,16 +18,17 @@ export class CommentController {
   constructor(private commentService: CommentService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post(':video_id')
+  @Post('video/:video_id')
   async createComment(
     @Request() req,
-    @Body() comment: { comment: string },
+    @Body() comment: { comment: string; parentId?: string },
     @Param('video_id') video_id: string,
   ) {
     const savedComment = await this.commentService.createComment(
       comment.comment,
       video_id,
       req.user,
+      comment.parentId,
     );
 
     return savedComment;
@@ -60,5 +62,12 @@ export class CommentController {
       );
 
     return await this.commentService.updateComment(id, content.content);
+  }
+
+  @Get('video/:id')
+  async commentsByVideo(@Request() req, @Param('id') id: string) {
+    const comments = await this.commentService.commentsByVideo(id);
+
+    return comments;
   }
 }
