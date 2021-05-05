@@ -58,7 +58,7 @@ export class CommentService {
   async commentsByVideo(videoId: string) {
     const comments = await this.commentRepository
       .createQueryBuilder('comment')
-      .leftJoinAndSelect('comment.children', 'children')
+      .innerJoinAndSelect('comment.children', 'children')
       .where('comment.videoId = :videoId', { videoId })
       .getMany();
 
