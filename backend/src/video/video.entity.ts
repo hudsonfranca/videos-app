@@ -22,8 +22,11 @@ export class Video {
   @Column({ nullable: false, type: 'varchar', length: 200 })
   filename: string;
 
-  @Column({ nullable: false, type: 'varchar', length: 200 })
+  @Column({ nullable: false, type: 'varchar' })
   url: string;
+
+  @Column({ nullable: false, type: 'varchar' })
+  thumbnail: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -31,20 +34,16 @@ export class Video {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.videos)
+  @ManyToOne(() => User, (user) => user.videos, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   user: User;
 
-  @OneToMany(() => Video_Tag, (videoTag) => videoTag.video, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  @OneToMany(() => Video_Tag, (videoTag) => videoTag.video)
   videotags: Video_Tag[];
 
-  @OneToMany(() => Comment, (comment) => comment.video, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  @OneToMany(() => Comment, (comment) => comment.video)
   comments: Comment[];
 }

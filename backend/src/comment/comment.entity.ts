@@ -27,7 +27,11 @@ export class Comment {
   @ManyToOne(() => User, (user) => user.comments)
   user: User;
 
-  @ManyToOne(() => Video, (video) => video.comments)
+  @ManyToOne(() => Video, (video) => video.comments, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   video: Video;
 
   @ManyToOne((type) => Comment, (comment) => comment.children, {

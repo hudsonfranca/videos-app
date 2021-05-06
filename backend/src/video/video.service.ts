@@ -17,18 +17,24 @@ export class VideoService {
     private videoTagRepository: Repository<Video_Tag>,
   ) {}
 
-  async videoUpload(file: Express.Multer.File, user: User, tags: string[]) {
-    const hostUrl = 'localhost:3000/uploads/';
+  async videoUpload(
+    video: Express.Multer.File,
+    thumbnail: Express.Multer.File,
+    user: User,
+    tags: string[],
+  ) {
+    const hostUrl = 'localhost:4000/uploads/';
 
     const videoTags = tags.map((tag) =>
       this.videoTagRepository.create({ tag: tag }),
     );
 
     const videoEntity = this.videoRepository.create({
-      originalname: file.originalname,
-      url: `${hostUrl}${file.filename}`,
-      filename: file.filename,
+      originalname: video.originalname,
+      url: `${hostUrl}${video.filename}`,
+      filename: video.filename,
       videotags: videoTags,
+      thumbnail: `${hostUrl}${thumbnail.filename}`,
     });
 
     videoEntity.user = user;

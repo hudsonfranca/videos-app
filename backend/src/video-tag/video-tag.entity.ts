@@ -22,6 +22,10 @@ export class Video_Tag {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Video, (video) => video.videotags)
+  @ManyToOne(() => Video, (video) => video.videotags, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   video: Video;
 }

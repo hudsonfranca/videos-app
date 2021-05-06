@@ -5,12 +5,12 @@ import {
   Post,
   Delete,
   Request,
-  UploadedFile,
   UseGuards,
   UseInterceptors,
   Body,
+  UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { VideoService } from './video.service';
 import { diskStorage } from 'multer';
 import { extname, resolve } from 'path';
@@ -24,29 +24,36 @@ export class VideoController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: resolve(__dirname, '..', '..', 'uploads'),
-        filename: (req, file, cb) => {
-          crypto.randomBytes(16, (err, res) => {
-            if (err) {
-              return cb(err, null);
-            }
-            return cb(null, res.toString('hex') + extname(file.originalname));
-          });
-        },
-      }),
-    }),
+    FileFieldsInterceptor(
+      [
+        { name: 'video', maxCount: 1 },
+        { name: 'thumbnail', maxCount: 1 },
+      ],
+      {
+        storage: diskStorage({
+          destination: resolve(__dirname, '..', '..', 'uploads'),
+          filename: (req, file, cb) => {
+            crypto.randomBytes(16, (err, res) => {
+              if (err) {
+                return cb(err, null);
+              }
+              return cb(null, res.toString('hex') + extname(file.originalname));
+            });
+          },
+        }),
+      },
+    ),
   )
   async videoUpload(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files,
     @Request() req,
     @Body() tags: { tags: string },
   ) {
     const videoTags = tags.tags.split(' ');
 
     const video = await this.videoService.videoUpload(
-      file,
+      files.video[0],
+      files.thumbnail[0],
       req.user,
       videoTags,
     );
@@ -76,7 +83,7 @@ export class VideoController {
     return videos;
   }
 
-  @Get('/index/i')
+  @Get('index/all')
   async findVideos() {
     const videos = await this.videoService.findVideos();
 
