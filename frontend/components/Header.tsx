@@ -1,7 +1,8 @@
 import React ,{useEffect,useState}from 'react'
-import { Navbar, Nav, Container } from 'react-bootstrap'
+import { Navbar, Nav} from 'react-bootstrap'
 import api from '../services/api'
 import { useRouter } from 'next/router'
+import styles from '../styles/Header.module.css'
 
 
 export const Header:React.FC = () => {
@@ -31,23 +32,32 @@ useEffect(()=>{
   currentUser();
 },[])
   return (
-    <Container fluid className="vh-100 p-0 m-0 position-fixed">
-    <Navbar bg="dark" variant="dark" className="d-flex w-100 ">
-    <Navbar.Brand href="#home" className="flex-grow-1">Videos App</Navbar.Brand>
+
+    <Navbar bg="dark" variant="dark"  fixed="top"  className={styles.header}>
+    <Navbar.Brand  className="flex-grow-1" onClick={()=>router.push('/')} style={{cursor:"pointer"}}>Videos App</Navbar.Brand>
 
 
     <Nav className="mr-auto ">
       {
-        !user &&(<> <Nav.Link onClick={()=>router.push('/login')}>Login</Nav.Link>  <Nav.Link onClick={()=>router.push('/signup')}>Cadastre-se</Nav.Link></>)
+        !user &&(
+        <>
+        <Nav.Link onClick={()=>router.push('/login')}>Login</Nav.Link>
+        <Nav.Link onClick={()=>router.push('/signup')}>Cadastre-se</Nav.Link>
+        </>)
       }
 
       {
-        user && (<Nav.Link onClick={logout}>Sair</Nav.Link>)
+        user && (
+        <>
+          <Nav.Link onClick={()=>router.push('/video_upload')}>Upload de video</Nav.Link>
+          <Nav.Link onClick={logout}>Sair</Nav.Link>
+        </>
+        )
       }
 
     </Nav>
 
   </Navbar>
-  </Container>
+
   )
 }

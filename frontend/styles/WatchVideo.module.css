@@ -1,0 +1,44 @@
+.container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas: "video recommendations"
+                        "comments recommendations";
+  justify-content: center;
+  align-items: flex-start;
+  grid-gap: 1rem;
+  background-color:#fff;
+  width: 100vw;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+.video {
+  grid-area: video;
+
+  width: 100%;
+  height: 100%;
+}
+
+.recommendations{
+  grid-area: recommendations;
+  width: 100%;
+  height: 100%;
+  padding: 0 10% 0 10%;
+  display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.comments{
+  grid-area: comments;
+
+  width: 100%;
+  height: 100%;
+}
+
+.videoTitle{
+  margin-top: 20px;
+  font-size: 1.5rem;
+}
+

@@ -22,18 +22,18 @@ export class VideoService {
     thumbnail: Express.Multer.File,
     user: User,
     tags: string[],
+    name: string,
   ) {
-    const hostUrl = 'localhost:4000/uploads/';
+    const hostUrl = 'http://localhost:4000/uploads/';
 
     const videoTags = tags.map((tag) =>
       this.videoTagRepository.create({ tag: tag }),
     );
 
     const videoEntity = this.videoRepository.create({
-      originalname: video.originalname,
+      name,
       url: `${hostUrl}${video.filename}`,
       filename: video.filename,
-      videotags: videoTags,
       thumbnail: `${hostUrl}${thumbnail.filename}`,
     });
 
@@ -41,7 +41,10 @@ export class VideoService {
 
     try {
       const savedVideo = await this.videoRepository.save(videoEntity);
-
+      videoTags.map(async (vt) => {
+        vt.video = savedVideo;
+        await this.videoTagRepository.save(vt);
+      });
       return savedVideo;
     } catch (error) {
       console.log(error);
@@ -52,7 +55,10 @@ export class VideoService {
   }
 
   async findById(id: string) {
-    const video = await this.videoRepository.findOne(id);
+    const video = await this.videoRepository.findOne(id, {
+      relations: ['videotags'],
+      select: ['id', 'filename', 'name', 'thumbnail', 'url'],
+    });
 
     if (!video) throw new BadRequestException('Este video não existe');
 
@@ -60,7 +66,9 @@ export class VideoService {
   }
 
   async findVideos() {
-    const video = await this.videoRepository.find();
+    const video = await this.videoRepository.find({
+      select: ['id', 'filename', 'name', 'thumbnail', 'url'],
+    });
 
     if (!video) throw new BadRequestException('Este video não existe');
 

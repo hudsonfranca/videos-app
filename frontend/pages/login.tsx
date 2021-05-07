@@ -6,17 +6,23 @@ import Head from 'next/head'
 import Link from 'next/link'
 import api from '../services/api';
 import { useRouter } from 'next/router'
+import { ToastContainer, toast } from 'react-toastify'
+
 
 const validationSchema = Yup.object({
   email: Yup.string().email('email invalido').required('campo obrigatório'),
   password: Yup.string()
     .required('campo obrigatório')
-    // .min(8, 'a senha deve conter no mínimo 8 caracteres')
+
 });
 
  const Login:React.FC = () => {
 
   const router = useRouter()
+
+  const notifyError = () => {
+    toast.error('Não foi possível efetuar o login')
+  }
 
    const {    handleBlur,
     handleChange,
@@ -39,9 +45,12 @@ const validationSchema = Yup.object({
         router.push('/')
       } catch (error) {
         console.error(error)
+        notifyError()
       }
     }
    })
+
+
 
   return (
     <>
@@ -49,6 +58,8 @@ const validationSchema = Yup.object({
         <title>Login</title>
       </Head>
       <Container className="vh-100 p-0 m-0" fluid>
+    <ToastContainer />
+
       <Row className="justify-content-center h-100 align-items-center ">
           <Col lg={5} md={8} sm={11}>
             <Form

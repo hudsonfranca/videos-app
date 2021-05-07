@@ -47,15 +47,19 @@ export class VideoController {
   async videoUpload(
     @UploadedFiles() files,
     @Request() req,
-    @Body() tags: { tags: string },
+    @Body() body: { tags: string; name: string },
   ) {
-    const videoTags = tags.tags.split(' ');
+    console.log('FILES ', files);
+    console.log('BODY ', body);
+
+    const videoTags = body.tags.split(',');
 
     const video = await this.videoService.videoUpload(
       files.video[0],
       files.thumbnail[0],
       req.user,
       videoTags,
+      body.name,
     );
 
     delete video.createdAt;
@@ -76,9 +80,10 @@ export class VideoController {
   }
 
   @Get()
-  async videosByTag(@Body() tags: any) {
-    console.log(tags);
-    const videos = await this.videoService.videosByTag(tags.tags);
+  async videosByTag(@Body() tags: any, @Request() req) {
+    const videos = await this.videoService.videosByTag(
+      Object.values(req.query),
+    );
 
     return videos;
   }

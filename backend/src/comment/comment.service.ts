@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { VideoService } from 'src/video/video.service';
-import { Repository } from 'typeorm';
+import { FindOperator, Repository } from 'typeorm';
 import { Comment } from './comment.entity';
 
 @Injectable()
@@ -58,8 +58,10 @@ export class CommentService {
   async commentsByVideo(videoId: string) {
     const comments = await this.commentRepository
       .createQueryBuilder('comment')
+      .innerJoinAndSelect('comment.parent', 'parent')
       .innerJoinAndSelect('comment.children', 'children')
       .where('comment.videoId = :videoId', { videoId })
+      .andWhere('children.parentId')
       .getMany();
 
     if (!comments)

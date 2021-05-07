@@ -3,9 +3,10 @@ import { Form,Button, Container, Row, Col, Spinner} from 'react-bootstrap'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Head from 'next/head'
-import Link from 'next/link'
 import api from '../services/api';
 import { useRouter } from 'next/router'
+import { ToastContainer, toast } from 'react-toastify'
+
 
 const validationSchema = Yup.object({
   username:Yup.string().required('campo obrigatório'),
@@ -22,6 +23,10 @@ const validationSchema = Yup.object({
  const Signup:React.FC = () => {
 
   const router = useRouter()
+
+  const notifyError = () => {
+    toast.error('Não foi possível criar a sua conta')
+  }
 
    const {    handleBlur,
     handleChange,
@@ -47,6 +52,7 @@ const validationSchema = Yup.object({
         router.push('/');
       } catch (error) {
         console.error(error)
+        notifyError()
       }
     }
    })
@@ -57,6 +63,8 @@ const validationSchema = Yup.object({
         <title>Cadastre-se</title>
       </Head>
       <Container className="vh-100 pe-5 p-0 m-0" fluid>
+    <ToastContainer />
+
       <Row className="justify-content-center h-100 align-items-center ">
           <Col lg={5} md={8} sm={11}>
             <Form

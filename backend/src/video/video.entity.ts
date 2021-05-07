@@ -16,10 +16,10 @@ export class Video {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: false, type: 'varchar', length: 200 })
-  originalname: string;
+  @Column({ nullable: false, type: 'varchar' })
+  name: string;
 
-  @Column({ nullable: false, type: 'varchar', length: 200 })
+  @Column({ nullable: false, type: 'varchar' })
   filename: string;
 
   @Column({ nullable: false, type: 'varchar' })

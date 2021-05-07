@@ -9,8 +9,10 @@ export const Layout:React.FC = ({children}) => {
   return (
     <>
     <Header/>
-    <Container fluid className="vw-100 vh-100 p-0 m-0">
-      {children}
+    <Container fluid className="vw-100  p-0 m-0" >
+      <main className="vw-100 " style={{marginTop:"56px"}}>
+        {children}
+      </main>
     </Container>
     <Footer/>
     </>
