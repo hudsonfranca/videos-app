@@ -86,6 +86,7 @@ export class VideoService {
       .createQueryBuilder('video')
       .leftJoinAndSelect('video.videotags', 'video__tag')
       .where('video__tag.tag IN (:...tags)', { tags })
+      .take(10)
       .getMany();
 
     return videos;

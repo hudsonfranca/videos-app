@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { Form,Button, Container, Row, Col, Spinner} from 'react-bootstrap'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -23,6 +23,20 @@ const validationSchema = Yup.object({
  const Signup:React.FC = () => {
 
   const router = useRouter()
+
+  useEffect(()=>{
+    const currentUser =async ()=>{
+      try {
+       await api.get("/auth/user");
+       router.push('/')
+      } catch (error) {
+        console.error(error)
+      }
+
+    };
+     currentUser();
+   },[])
+
 
   const notifyError = () => {
     toast.error('Não foi possível criar a sua conta')
@@ -49,7 +63,7 @@ const validationSchema = Yup.object({
           email: values.email,
           password: values.password
         })
-        router.push('/');
+        router.reload();
       } catch (error) {
         console.error(error)
         notifyError()

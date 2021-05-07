@@ -1,0 +1,12 @@
+@value colors: "./colors.css";
+@value primary from colors;
+
+.container {
+  background-color: primary;
+}
+
+.form {
+  background-color: primary;
+  border-radius: 10px;
+  padding: 10px;
+}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { Form,Button, Container, Row, Col, Spinner} from 'react-bootstrap'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -7,6 +7,7 @@ import Link from 'next/link'
 import api from '../services/api';
 import { useRouter } from 'next/router'
 import { ToastContainer, toast } from 'react-toastify'
+import styles from '../styles/Login.module.css';
 
 
 const validationSchema = Yup.object({
@@ -19,6 +20,19 @@ const validationSchema = Yup.object({
  const Login:React.FC = () => {
 
   const router = useRouter()
+
+  useEffect(()=>{
+    const currentUser =async ()=>{
+      try {
+       await api.get("/auth/user");
+       router.push('/')
+      } catch (error) {
+        console.error(error)
+      }
+
+    };
+     currentUser();
+   },[])
 
   const notifyError = () => {
     toast.error('Não foi possível efetuar o login')
@@ -42,7 +56,7 @@ const validationSchema = Yup.object({
           email: values.email,
           password: values.password
         })
-        router.push('/')
+        router.reload()
       } catch (error) {
         console.error(error)
         notifyError()

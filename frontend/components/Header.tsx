@@ -33,9 +33,8 @@ useEffect(()=>{
 },[])
   return (
 
-    <Navbar bg="dark" variant="dark"  fixed="top"  className={styles.header}>
+    <Navbar bg="light" variant="light"  fixed="top"  className={styles.header}>
     <Navbar.Brand  className="flex-grow-1" onClick={()=>router.push('/')} style={{cursor:"pointer"}}>Videos App</Navbar.Brand>
-
 
     <Nav className="mr-auto ">
       {
