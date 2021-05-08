@@ -7,10 +7,18 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  Tree,
+  TreeChildren,
+  TreeParent,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 
 @Entity()
+@Tree('closure-table', {
+  closureTableName: 'comment_closure',
+  ancestorColumnName: (colum) => `ancestor_${colum.propertyName}`,
+  descendantColumnName: (colum) => `descendant_${colum.propertyName}`,
+})
 export class Comment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -34,15 +42,21 @@ export class Comment {
   })
   video: Video;
 
-  @ManyToOne((type) => Comment, (comment) => comment.children, {
-    nullable: true,
-  })
+  @TreeChildren()
+  children: Comment[];
+
+  @TreeParent()
   parent: Comment;
 
-  @OneToMany((type) => Comment, (comment) => comment.parent, {
-    cascade: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  children: Comment[];
+  // @ManyToOne((type) => Comment, (comment) => comment.children, {
+  //   nullable: true,
+  // })
+  // parent: Comment;
+
+  // @OneToMany((type) => Comment, (comment) => comment.parent, {
+  //   cascade: true,
+  //   onDelete: 'CASCADE',
+  //   onUpdate: 'CASCADE',
+  // })
+  // children: Comment[];
 }

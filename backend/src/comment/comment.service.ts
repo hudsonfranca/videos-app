@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { VideoService } from 'src/video/video.service';
-import { FindOperator, Repository } from 'typeorm';
+import { Repository, getManager } from 'typeorm';
 import { Comment } from './comment.entity';
 
 @Injectable()
@@ -56,16 +56,23 @@ export class CommentService {
   }
 
   async commentsByVideo(videoId: string) {
-    const comments = await this.commentRepository
+    const manager = getManager();
+
+    const rootComments = await this.commentRepository
       .createQueryBuilder('comment')
-      .innerJoinAndSelect('comment.parent', 'parent')
-      .innerJoinAndSelect('comment.children', 'children')
       .where('comment.videoId = :videoId', { videoId })
-      .andWhere('children.parentId')
+      .andWhere('comment.parentId IS NULL')
       .getMany();
 
-    if (!comments)
-      throw new BadRequestException('Este commentário não existe.');
+    const repository = manager.getTreeRepository(Comment);
+
+    /* eslint-disable */
+    let comments: Comment[] = [];
+    /* eslint-enable */
+
+    for (const comment of rootComments) {
+      comments.push(await repository.findDescendantsTree(comment));
+    }
 
     return comments;
   }
