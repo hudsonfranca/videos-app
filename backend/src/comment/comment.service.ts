@@ -37,7 +37,7 @@ export class CommentService {
 
     try {
       const savedComment = await this.commentRepository.save(commentEntity);
-      return savedComment;
+      return this.commentById(savedComment.id);
     } catch (error) {
       throw new InternalServerErrorException(
         'Não foi possível salvar o comentário.',
@@ -49,7 +49,7 @@ export class CommentService {
     const comment = await this.commentRepository.findOne(id, {
       relations: ['user'],
     });
-
+    delete comment.user.password;
     if (!comment) throw new BadRequestException('Este commentário não existe.');
 
     return comment;
@@ -79,8 +79,48 @@ export class CommentService {
 
   async deleteComment(id: string) {
     await this.commentById(id);
+    const manager = getManager();
+    const repository = manager.getTreeRepository(Comment);
 
-    return await this.commentRepository.delete(id);
+    try {
+      // Delete all the nodes from the closure table
+      await repository
+        .createQueryBuilder('comment')
+        .delete()
+        .from('comment_closure_closure')
+        .where(`"descendant_id" = :id`, { id })
+        .orWhere(`ancestor_id = :id`, { id })
+        .execute();
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+
+    try {
+      // Set parent to null in the main table
+      if ('parent' && 'parentId') {
+        await repository
+          .createQueryBuilder('comment')
+          .update('comment', { ['parent']: null })
+          .where(`${'parent'} = :id`, { id })
+          .execute();
+      }
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+
+    try {
+      // Delete entity
+      await repository
+        .createQueryBuilder('comment')
+        .delete()
+        .from('comment')
+        .where(`id = :id`, { id })
+        .execute();
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+
+    return true;
   }
 
   async updateComment(id: string, content: string) {

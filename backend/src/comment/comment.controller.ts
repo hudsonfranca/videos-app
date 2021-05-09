@@ -42,9 +42,7 @@ export class CommentController {
     if (comment.user.id !== req.user.id)
       throw new UnauthorizedException('Você não pode deletar este comentario');
 
-    const { affected } = await this.commentService.deleteComment(comment.id);
-
-    return affected;
+    return await this.commentService.deleteComment(comment.id);
   }
 
   @UseGuards(JwtAuthGuard)
