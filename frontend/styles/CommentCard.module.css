@@ -62,13 +62,26 @@ margin-top: 10px;
 }
 
 
-.reply_button{
+.buttons_container{
   grid-area: reply_button;
   width: 100%;
   height: 100%;
-  cursor: pointer;
-  font-size: 0.9rem;
 
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.buttons_container img{
+  width: 25px;
+  cursor: pointer;
+}
+
+.buttons_container p{
+  margin:0 5px 0 0;
+  cursor: pointer;
 }
 
 .reply_form{

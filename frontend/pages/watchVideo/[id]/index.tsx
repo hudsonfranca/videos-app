@@ -33,10 +33,6 @@ const WatchVideo = ({
     loadComments()
   }, [])
 
-  const notifyError = () => {
-    toast.error('Não foi possível adicionar o seu comentario ao video.')
-  }
-
   return (
     <>
       <Head>

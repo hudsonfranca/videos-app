@@ -91,4 +91,10 @@ export class VideoController {
 
     return videos;
   }
+
+  @Get('search/by_name')
+  async searchVideo(@Request() req) {
+    const videos = await this.videoService.searchVideo(req.query.name);
+    return videos;
+  }
 }

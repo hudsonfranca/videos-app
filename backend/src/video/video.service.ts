@@ -91,4 +91,13 @@ export class VideoService {
 
     return videos;
   }
+
+  async searchVideo(name: string) {
+    const videos = await this.videoRepository
+      .createQueryBuilder('video')
+      .where('name ILIKE :name', { name: `%${name}%` })
+      .getMany();
+
+    return videos;
+  }
 }

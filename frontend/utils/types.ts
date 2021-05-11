@@ -70,3 +70,10 @@ export interface CommentById {
     }
   }
 }
+
+export interface CurrentUser {
+  id: string
+  email: string
+  username: string
+  profilePicture: string
+}
