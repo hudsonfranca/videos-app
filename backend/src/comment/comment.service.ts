@@ -32,12 +32,13 @@ export class CommentService {
       comment,
       video,
       user,
-      parent: parentComment ? parentComment : null,
+      parent: parentComment && parentComment,
     });
 
     try {
       const savedComment = await this.commentRepository.save(commentEntity);
-      return this.commentById(savedComment.id);
+
+      return await this.commentById(savedComment.id);
     } catch (error) {
       throw new InternalServerErrorException(
         'Não foi possível salvar o comentário.',
@@ -47,12 +48,24 @@ export class CommentService {
 
   async commentById(id: string) {
     const comment = await this.commentRepository.findOne(id, {
-      relations: ['user'],
+      relations: ['user', 'video', 'parent'],
     });
-    delete comment.user.password;
+
     if (!comment) throw new BadRequestException('Este commentário não existe.');
 
-    return comment;
+    if (!comment.parent) {
+      delete comment.user.password;
+      return comment;
+    }
+
+    const childComment = await this.commentRepository.findOne(id, {
+      relations: ['user', 'video', 'parent', 'parent.user'],
+    });
+
+    delete childComment.parent.user.password;
+    delete childComment.user.password;
+
+    return childComment;
   }
 
   async commentsByVideo(videoId: string) {

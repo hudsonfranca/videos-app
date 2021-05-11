@@ -16,8 +16,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(params: CreateUserDto) {
-    const user = await this.userService.createUser(params);
+  async signup(params: CreateUserDto, profilePicture: Express.Multer.File) {
+    const user = await this.userService.createUser(params, profilePicture);
 
     const payload = { username: user.username, sub: user.id };
     return {

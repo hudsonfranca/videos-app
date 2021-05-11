@@ -11,8 +11,13 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async createUser(params: CreateUserDto): Promise<User> {
+  async createUser(
+    params: CreateUserDto,
+    profilePicture: Express.Multer.File,
+  ): Promise<User> {
     const { email, password, username } = params;
+
+    const hostUrl = 'http://localhost:4000/uploads/';
 
     const userEmail = await this.userRepository.findOne({ email });
 
@@ -25,6 +30,7 @@ export class UserService {
       email,
       username,
       password: hash,
+      profilePicture: `${hostUrl}${profilePicture.filename}`,
     });
 
     const user = await this.userRepository.save(userEntity);
@@ -34,13 +40,13 @@ export class UserService {
 
   async findUserById(id: string): Promise<User> {
     return await this.userRepository.findOne(id, {
-      select: ['id', 'email', 'username'],
+      select: ['id', 'email', 'username', 'profilePicture'],
     });
   }
 
   async findUsers(): Promise<User[]> {
     return await this.userRepository.find({
-      select: ['id', 'email', 'username'],
+      select: ['id', 'email', 'username', 'profilePicture'],
     });
   }
   async findOneByEmail(email: string): Promise<User> {

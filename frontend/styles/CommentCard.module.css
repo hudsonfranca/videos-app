@@ -1,0 +1,74 @@
+.card{
+  width: 100%;
+  height: auto;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-areas: "avatar author"
+                        "avatar comment"
+                        "avatar reply_button"
+                        "avatar reply_form";
+  justify-content: flex-start;
+  margin-bottom: 4px;
+  border-top: 1px solid #e5e5e5;
+margin-top: 10px;
+}
+
+.card_child{
+  width: 100%;
+  height: auto;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-areas: "avatar author"
+                        "avatar comment"
+                        "avatar reply_button"
+                        "avatar reply_form";
+  justify-content: flex-start;
+  margin-bottom: 4px;
+  margin-left: 25px;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 10px;
+
+}
+
+.avatar{
+  grid-area: avatar;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.avatar_child{
+  grid-area: avatar;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.comment{
+  grid-area: comment;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+
+}
+
+.comment span{
+  color: blue;
+  margin-right: 4px;
+}
+
+
+.reply_button{
+  grid-area: reply_button;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.reply_form{
+  grid-area: reply_form;
+}

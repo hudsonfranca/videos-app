@@ -6,19 +6,46 @@ import {
   Post,
   Request,
   UnauthorizedException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
+import { diskStorage } from 'multer';
+import { extname, resolve } from 'path';
+import * as crypto from 'crypto';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.createUser(createUserDto);
+  @UseInterceptors(
+    FileInterceptor('profilePicture', {
+      storage: diskStorage({
+        destination: resolve(__dirname, '..', '..', 'uploads'),
+        filename: (req, file, cb) => {
+          crypto.randomBytes(16, (err, res) => {
+            if (err) {
+              return cb(err, null);
+            }
+            return cb(null, res.toString('hex') + extname(file.originalname));
+          });
+        },
+      }),
+    }),
+  )
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @UploadedFile() profilePicture: Express.Multer.File,
+  ) {
+    const user = await this.userService.createUser(
+      createUserDto,
+      profilePicture,
+    );
     return user;
   }
 

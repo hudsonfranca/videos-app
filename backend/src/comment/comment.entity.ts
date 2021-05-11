@@ -32,7 +32,11 @@ export class Comment {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   user: User;
 
   @ManyToOne(() => Video, (video) => video.comments, {
@@ -47,16 +51,4 @@ export class Comment {
 
   @TreeParent()
   parent: Comment;
-
-  // @ManyToOne((type) => Comment, (comment) => comment.children, {
-  //   nullable: true,
-  // })
-  // parent: Comment;
-
-  // @OneToMany((type) => Comment, (comment) => comment.parent, {
-  //   cascade: true,
-  //   onDelete: 'CASCADE',
-  //   onUpdate: 'CASCADE',
-  // })
-  // children: Comment[];
 }

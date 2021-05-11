@@ -49,9 +49,6 @@ export class VideoController {
     @Request() req,
     @Body() body: { tags: string; name: string },
   ) {
-    console.log('FILES ', files);
-    console.log('BODY ', body);
-
     const videoTags = body.tags.split(',');
 
     const video = await this.videoService.videoUpload(

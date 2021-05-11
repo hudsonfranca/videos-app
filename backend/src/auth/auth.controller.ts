@@ -5,25 +5,50 @@ import {
   Post,
   Request,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
+import { diskStorage } from 'multer';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { extname, resolve } from 'path';
+import * as crypto from 'crypto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signup')
+  @UseInterceptors(
+    FileInterceptor('profilePicture', {
+      storage: diskStorage({
+        destination: resolve(__dirname, '..', '..', 'uploads'),
+        filename: (req, file, cb) => {
+          crypto.randomBytes(16, (err, res) => {
+            if (err) {
+              return cb(err, null);
+            }
+            return cb(null, res.toString('hex') + extname(file.originalname));
+          });
+        },
+      }),
+    }),
+  )
   async signup(
     @Body() createUserDto: CreateUserDto,
     @Res({ passthrough: true }) response: Response,
+    @UploadedFile() profilePicture: Express.Multer.File,
   ) {
-    const { access_token, user } = await this.authService.signup(createUserDto);
+    const { access_token, user } = await this.authService.signup(
+      createUserDto,
+      profilePicture,
+    );
 
     response.cookie('authorization', `${access_token}`, {
       httpOnly: false,

@@ -1,50 +1,47 @@
-import React,{useEffect} from 'react'
-import { Form,Button, Container, Row, Col, Spinner} from 'react-bootstrap'
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import React, { useEffect } from 'react'
+import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import Head from 'next/head'
 import Link from 'next/link'
-import api from '../services/api';
+import api from '../services/api'
 import { useRouter } from 'next/router'
 import { ToastContainer, toast } from 'react-toastify'
-import styles from '../styles/Login.module.css';
-
+import styles from '../styles/Login.module.css'
 
 const validationSchema = Yup.object({
   email: Yup.string().email('email invalido').required('campo obrigatório'),
-  password: Yup.string()
-    .required('campo obrigatório')
+  password: Yup.string().required('campo obrigatório')
+})
 
-});
-
- const Login:React.FC = () => {
-
+const Login: React.FC = () => {
   const router = useRouter()
 
-  useEffect(()=>{
-    const currentUser =async ()=>{
+  useEffect(() => {
+    const currentUser = async () => {
       try {
-       await api.get("/auth/user");
-       router.push('/')
+        await api.get('/auth/user')
+        router.push('/')
       } catch (error) {
         console.error(error)
       }
-
-    };
-     currentUser();
-   },[])
+    }
+    currentUser()
+  }, [])
 
   const notifyError = () => {
     toast.error('Não foi possível efetuar o login')
   }
 
-   const {    handleBlur,
+  const {
+    handleBlur,
     handleChange,
     handleSubmit,
     values,
     touched,
     errors,
-    isSubmitting} = useFormik({
+    isSubmitting
+  } = useFormik({
     initialValues: {
       email: '',
       password: ''
@@ -52,7 +49,7 @@ const validationSchema = Yup.object({
     validationSchema,
     onSubmit: async values => {
       try {
-         await api.post('/auth/login', {
+        await api.post('/auth/login', {
           email: values.email,
           password: values.password
         })
@@ -62,9 +59,7 @@ const validationSchema = Yup.object({
         notifyError()
       }
     }
-   })
-
-
+  })
 
   return (
     <>
@@ -72,9 +67,9 @@ const validationSchema = Yup.object({
         <title>Login</title>
       </Head>
       <Container className="vh-100 p-0 m-0" fluid>
-    <ToastContainer />
+        <ToastContainer />
 
-      <Row className="justify-content-center h-100 align-items-center ">
+        <Row className="justify-content-center h-100 align-items-center ">
           <Col lg={5} md={8} sm={11}>
             <Form
               noValidate
@@ -159,11 +154,9 @@ const validationSchema = Yup.object({
             </Form>
           </Col>
         </Row>
-  </Container>
-</>
+      </Container>
+    </>
   )
 }
-
-
 
 export default Login

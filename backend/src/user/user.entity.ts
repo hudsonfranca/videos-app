@@ -23,6 +23,9 @@ export class User {
   @Column({ nullable: false })
   password: string;
 
+  @Column({ nullable: true, type: 'varchar' })
+  profilePicture: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

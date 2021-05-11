@@ -1,75 +1,83 @@
-import React,{useEffect} from 'react'
-import { Form,Button, Container, Row, Col, Spinner} from 'react-bootstrap'
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import React, { useEffect } from 'react'
+import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import Head from 'next/head'
-import api from '../services/api';
+import api from '../services/api'
 import { useRouter } from 'next/router'
 import { ToastContainer, toast } from 'react-toastify'
 
-
 const validationSchema = Yup.object({
-  username:Yup.string().required('campo obrigatório'),
+  username: Yup.string().required('campo obrigatório'),
   email: Yup.string().email('email invalido').required('*campo obrigatório'),
-    password: Yup.string()
-    .required('*campo obrigatório'),
+  password: Yup.string().required('*campo obrigatório'),
   passwordConfirmation: Yup.string()
     .required('*campo obrigatório')
     .test('passwords-match', 'As senhas devem ser iguais', function (value) {
       return this.parent.password === value
-    })
-});
+    }),
+  profilePicture: Yup.mixed()
+    .required('*campo obrigatório')
+    .test(
+      'fileSize',
+      'Escolha uma imagem que seja menor que 10MB',
+      value => value && value.size <= 10 * 1048576
+    )
+})
 
- const Signup:React.FC = () => {
-
+const Signup: React.FC = () => {
   const router = useRouter()
 
-  useEffect(()=>{
-    const currentUser =async ()=>{
+  useEffect(() => {
+    const currentUser = async () => {
       try {
-       await api.get("/auth/user");
-       router.push('/')
+        await api.get('/auth/user')
+        router.push('/')
       } catch (error) {
         console.error(error)
       }
-
-    };
-     currentUser();
-   },[])
-
+    }
+    currentUser()
+  }, [])
 
   const notifyError = () => {
     toast.error('Não foi possível criar a sua conta')
   }
 
-   const {    handleBlur,
+  const {
+    handleBlur,
     handleChange,
     handleSubmit,
     values,
     touched,
     errors,
-    isSubmitting} = useFormik({
+    setFieldValue,
+    isSubmitting
+  } = useFormik({
     initialValues: {
       email: '',
       password: '',
       passwordConfirmation: '',
-      username:''
+      username: '',
+      profilePicture: null
     },
     validationSchema,
     onSubmit: async values => {
+      const formData = new FormData()
+      formData.append('username', values.username)
+      formData.append('email', values.email)
+      formData.append('password', values.password)
+      formData.append('profilePicture', values.profilePicture)
+
       try {
-         await api.post('/auth/signup', {
-           username:values.username,
-          email: values.email,
-          password: values.password
-        })
-        router.reload();
+        await api.post('/auth/signup', formData)
+        router.reload()
       } catch (error) {
         console.error(error)
         notifyError()
       }
     }
-   })
+  })
 
   return (
     <>
@@ -77,9 +85,9 @@ const validationSchema = Yup.object({
         <title>Cadastre-se</title>
       </Head>
       <Container className="vh-100 pe-5 p-0 m-0" fluid>
-    <ToastContainer />
+        <ToastContainer />
 
-      <Row className="justify-content-center h-100 align-items-center ">
+        <Row className="justify-content-center h-100 align-items-center ">
           <Col lg={5} md={8} sm={11}>
             <Form
               noValidate
@@ -92,15 +100,41 @@ const validationSchema = Yup.object({
                 </Col>
               </Row>
               <Row>
+                <Form.Group sm md as={Col}>
+                  <Form.Label>Selecione uma foto de perfil</Form.Label>
+                  <Form.File id="formcheck-api-custom" custom>
+                    <Form.File.Input
+                      isInvalid={!!errors.profilePicture}
+                      onChange={event => {
+                        setFieldValue(
+                          'profilePicture',
+                          event.currentTarget.files[0]
+                        )
+                      }}
+                      isValid={touched.profilePicture && !errors.profilePicture}
+                      placeholder="Foto de perfil"
+                      name="profilePicture"
+                      onBlur={handleBlur}
+                      accept="image/*"
+                    />
+                    <Form.File.Label data-browse="Buscar">
+                      {values.profilePicture?.name}
+                    </Form.File.Label>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.profilePicture}
+                    </Form.Control.Feedback>
+                  </Form.File>
+                </Form.Group>
+              </Row>
+              <Row>
                 <Col>
-                <Form.Group>
+                  <Form.Group>
                     <Form.Label>Nome</Form.Label>
                     <Form.Control
                       isInvalid={!!errors.username}
                       value={values.username}
                       onChange={handleChange}
                       isValid={touched.username && !errors.username}
-
                       placeholder="Digite o seu nome"
                       name="username"
                       onBlur={handleBlur}
@@ -142,23 +176,24 @@ const validationSchema = Yup.object({
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                <Form.Label>Confirme sua senha</Form.Label>
-                <Form.Control
-                  isInvalid={!!errors.passwordConfirmation}
-                  value={values.passwordConfirmation}
-                  onChange={handleChange}
-                  isValid={
-                    touched.passwordConfirmation && !errors.passwordConfirmation
-                  }
-                  type="password"
-                  placeholder="Repita a sua senha"
-                  name="passwordConfirmation"
-                  onBlur={handleBlur}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.passwordConfirmation}
-                </Form.Control.Feedback>
-              </Form.Group>
+                    <Form.Label>Confirme sua senha</Form.Label>
+                    <Form.Control
+                      isInvalid={!!errors.passwordConfirmation}
+                      value={values.passwordConfirmation}
+                      onChange={handleChange}
+                      isValid={
+                        touched.passwordConfirmation &&
+                        !errors.passwordConfirmation
+                      }
+                      type="password"
+                      placeholder="Repita a sua senha"
+                      name="passwordConfirmation"
+                      onBlur={handleBlur}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.passwordConfirmation}
+                    </Form.Control.Feedback>
+                  </Form.Group>
                 </Col>
               </Row>
               <Row>
@@ -185,11 +220,9 @@ const validationSchema = Yup.object({
             </Form>
           </Col>
         </Row>
-  </Container>
-</>
+      </Container>
+    </>
   )
 }
-
-
 
 export default Signup

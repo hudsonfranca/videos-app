@@ -1,59 +1,96 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { InferGetServerSidePropsType } from 'next'
-import { Container} from 'react-bootstrap'
 import api from '../../../services/api'
 import styles from '../../../styles/WatchVideo.module.css'
-import {VideoByID} from '../../../utils/types'
+import { VideoByID } from '../../../utils/types'
 import Head from 'next/head'
-import { ReactVideo } from "reactjs-media";
-import {VideoCard} from '../../../components/VideoCard'
+import { ReactVideo } from 'reactjs-media'
+import { VideoCard } from '../../../components/VideoCard'
 import { useRouter } from 'next/router'
+import { Comment } from '../../../components/Comment'
+import { Container } from 'react-bootstrap'
+import { ToastContainer, toast } from 'react-toastify'
+import { CommentInputBox } from '../../../components/CommentInputBox'
 
-
- const WatchVideo = ({ video,recommendations }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const WatchVideo = ({
+  video,
+  recommendations
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter()
+
+  const [comments, setComents] = useState<any>()
+
+  useEffect(() => {
+    const loadComments = async () => {
+      try {
+        const { data } = await api.get(`comment/video/${video.id}`)
+        setComents(data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    loadComments()
+  }, [])
+
+  const notifyError = () => {
+    toast.error('Não foi possível adicionar o seu comentario ao video.')
+  }
 
   return (
     <>
-       <Head>
+      <Head>
         <title>{video.name}</title>
-
       </Head>
-    <Container className={styles.container} fluid >
-    <div className={styles.video}>
-    <ReactVideo
-                src={video.url}
-                poster={video.thumbnail}
-                primaryColor="red"
-                // other props
-            />
-            <p  className={styles.videoTitle}>{video.name}</p>
-    </div>
-    <div className={styles.recommendations}>
-    {
-         recommendations && recommendations.map(({name,thumbnail,id})=>(
-           <VideoCard name={name} thumbnail={thumbnail} id={id} handleClick={()=>router.push(`/watchVideo/${id}`)}/>
-         ))
-       }
-    </div>
-    <div className={styles.comments}></div>
+      <Container className={styles.container} fluid>
+        <ToastContainer />
 
-    </Container>
+        <div className={styles.video}>
+          <ReactVideo
+            src={video.url}
+            poster={video.thumbnail}
+            primaryColor="red"
+            // other props
+          />
+          <p className={styles.videoTitle}>{video.name}</p>
+        </div>
+        <div className={styles.recommendations}>
+          {recommendations &&
+            recommendations.map(({ name, thumbnail, id }) => (
+              <VideoCard
+                key={id}
+                name={name}
+                thumbnail={thumbnail}
+                id={id}
+                handleClick={() => router.push(`/watchVideo/${id}`)}
+              />
+            ))}
+        </div>
+        <div className={styles.comments}>
+          <CommentInputBox videoId={video.id} />
+          {comments &&
+            comments.map(comment => (
+              <Comment key={comment.id} comment={comment} type="root" />
+            ))}
+        </div>
+      </Container>
     </>
   )
 }
 
 export async function getServerSideProps(context) {
-  const {data:video} = await api.get<VideoByID>(`/video/${context.params.id}`)
-  const tags = video.videotags.map(({tag})=>tag)
-  const {data:recommendations} = await api.get<VideoByID[]>(`/video`,{params:tags})
-
+  const { data: video } = await api.get<VideoByID>(
+    `/video/${context.params.id}`
+  )
+  const tags = video.videotags.map(({ tag }) => tag)
+  const { data: recommendations } = await api.get<VideoByID[]>(`/video`, {
+    params: tags
+  })
 
   return {
     props: {
       video,
       recommendations
-    },
+    }
   }
 }
 

@@ -10,6 +10,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { get } from 'node:http';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CommentService } from './comment.service';
 
@@ -67,5 +68,12 @@ export class CommentController {
     const comments = await this.commentService.commentsByVideo(id);
 
     return comments;
+  }
+
+  @Get(':id')
+  async commentsById(@Param('id') id: string) {
+    const comment = await this.commentService.commentById(id);
+
+    return comment;
   }
 }
