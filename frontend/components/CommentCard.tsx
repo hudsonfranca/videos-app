@@ -6,9 +6,14 @@ import { CommentInputBox } from './CommentInputBox'
 interface Props {
   commentById: CommentById
   isRoot: boolean
+  loadComments?: () => void
 }
 
-export const CommentCard: React.FC<Props> = ({ commentById, isRoot }) => {
+export const CommentCard: React.FC<Props> = ({
+  commentById,
+  isRoot,
+  loadComments
+}) => {
   const [showCommentBox, setShowCommentBox] = useState(false)
 
   const onCancel = () => {
@@ -38,7 +43,8 @@ export const CommentCard: React.FC<Props> = ({ commentById, isRoot }) => {
           <CommentInputBox
             videoId={commentById.video.id}
             onCancel={onCancel}
-            parentId={commentById.parent.id}
+            parentId={commentById.id}
+            loadComments={loadComments}
           />
         )}
       </div>

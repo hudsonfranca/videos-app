@@ -1,24 +1,39 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import api from '../services/api'
 
 const validationSchema = Yup.object({
-  comment: Yup.string().required(),
-  parentId: Yup.string()
+  comment: Yup.string().required()
 })
 
 interface Props {
   videoId: string
   parentId?: string
   onCancel?: () => void
+  loadComments?: () => void
 }
 
 export const CommentInputBox: React.FC<Props> = ({
   parentId,
   videoId,
-  onCancel
+  onCancel,
+  loadComments
 }) => {
+  const [user, setUser] = useState(false)
+
+  useEffect(() => {
+    const currentUser = async () => {
+      try {
+        const user = await api.get('/auth/user')
+        if (user) setUser(true)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    currentUser()
+  }, [])
   const {
     handleBlur,
     handleChange,
@@ -30,21 +45,20 @@ export const CommentInputBox: React.FC<Props> = ({
     isSubmitting
   } = useFormik({
     initialValues: {
-      comment: '',
-      parentId: ''
+      comment: ''
     },
     validationSchema,
     onSubmit: async values => {
-      // try {
-      //    await api.post('/auth/login', {
-      //     email: values.email,
-      //     password: values.password
-      //   })
-      //   router.reload()
-      // } catch (error) {
-      //   console.error(error)
-      //   notifyError()
-      // }
+      try {
+        await api.post(`/comment/video/${videoId}`, {
+          comment: values.comment,
+          parentId
+        })
+        resetForm()
+        loadComments()
+      } catch (error) {
+        console.error(error)
+      }
     }
   })
 
@@ -62,9 +76,6 @@ export const CommentInputBox: React.FC<Props> = ({
               name="comment"
               onBlur={handleBlur}
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.comment}
-            </Form.Control.Feedback>
           </Form.Group>
         </Col>
       </Row>
@@ -75,12 +86,16 @@ export const CommentInputBox: React.FC<Props> = ({
             style={{ marginRight: '6px' }}
             onClick={() => {
               resetForm()
-              onCancel()
+              if (onCancel) onCancel()
             }}
           >
             Cancelar
           </Button>
-          <Button variant="primary" type="submit" disabled={isSubmitting}>
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={isSubmitting || !user}
+          >
             {isSubmitting && (
               <Spinner
                 as="span"

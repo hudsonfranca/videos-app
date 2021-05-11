@@ -1,7 +1,5 @@
 import React from 'react'
-import { Card } from 'react-bootstrap'
 import styles from '../styles/Card.module.css'
-import Image from 'next/image'
 
 interface Props {
   thumbnail: string

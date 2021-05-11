@@ -49,6 +49,7 @@ export class CommentService {
   async commentById(id: string) {
     const comment = await this.commentRepository.findOne(id, {
       relations: ['user', 'video', 'parent'],
+      order: { createdAt: -1 },
     });
 
     if (!comment) throw new BadRequestException('Este commentário não existe.');

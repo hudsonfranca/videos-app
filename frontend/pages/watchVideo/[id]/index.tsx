@@ -20,15 +20,16 @@ const WatchVideo = ({
 
   const [comments, setComents] = useState<any>()
 
-  useEffect(() => {
-    const loadComments = async () => {
-      try {
-        const { data } = await api.get(`comment/video/${video.id}`)
-        setComents(data)
-      } catch (error) {
-        console.log(error)
-      }
+  const loadComments = async () => {
+    try {
+      const { data } = await api.get(`comment/video/${video.id}`)
+      setComents(data)
+    } catch (error) {
+      console.log(error)
     }
+  }
+
+  useEffect(() => {
     loadComments()
   }, [])
 
@@ -66,10 +67,15 @@ const WatchVideo = ({
             ))}
         </div>
         <div className={styles.comments}>
-          <CommentInputBox videoId={video.id} />
+          <CommentInputBox videoId={video.id} loadComments={loadComments} />
           {comments &&
             comments.map(comment => (
-              <Comment key={comment.id} comment={comment} type="root" />
+              <Comment
+                key={comment.id}
+                comment={comment}
+                type="root"
+                loadComments={loadComments}
+              />
             ))}
         </div>
       </Container>

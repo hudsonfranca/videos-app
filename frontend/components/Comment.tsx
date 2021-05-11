@@ -7,9 +7,10 @@ import styles from '../styles/Comment.module.css'
 interface Props {
   comment: any
   type: string
+  loadComments?: () => void
 }
 
-export const Comment: React.FC<Props> = ({ comment, type }) => {
+export const Comment: React.FC<Props> = ({ comment, type, loadComments }) => {
   const [commentById, setCommentById] = useState<CommentById>()
   const [isRootComment, setIsRootComment] = useState(false)
 
@@ -24,13 +25,24 @@ export const Comment: React.FC<Props> = ({ comment, type }) => {
     findComment()
   }, [])
   const nestedComments = (comment.children || []).map(comment => {
-    return <Comment key={comment.id} comment={comment} type="child" />
+    return (
+      <Comment
+        key={comment.id}
+        comment={comment}
+        type="child"
+        loadComments={loadComments}
+      />
+    )
   })
 
   return (
     <div>
       {commentById && (
-        <CommentCard commentById={commentById} isRoot={isRootComment} />
+        <CommentCard
+          commentById={commentById}
+          isRoot={isRootComment}
+          loadComments={loadComments}
+        />
       )}
 
       {nestedComments}
