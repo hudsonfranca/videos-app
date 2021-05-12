@@ -95,6 +95,13 @@ export class VideoService {
   async searchVideo(name: string) {
     const videos = await this.videoRepository
       .createQueryBuilder('video')
+      .select([
+        'video.id',
+        'video.name',
+        'video.filename',
+        'video.url',
+        'video.thumbnail',
+      ])
       .where('name ILIKE :name', { name: `%${name}%` })
       .getMany();
 

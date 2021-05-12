@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap'
+import { Form, Button, Row, Col, Spinner } from 'react-bootstrap'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import api from '../services/api'
-import { ToastContainer, toast } from 'react-toastify'
 
 const validationSchema = Yup.object({
   comment: Yup.string().required()
@@ -23,16 +22,13 @@ export const CommentInputBox: React.FC<Props> = ({
   loadComments
 }) => {
   const [user, setUser] = useState(false)
-  const notifyError = () => {
-    toast.error('Não foi possível adicionar o seu comentario ao video.')
-  }
+
   useEffect(() => {
     const currentUser = async () => {
       try {
         const user = await api.get('/auth/user')
         if (user) setUser(true)
       } catch (error) {
-        notifyError()
         console.error(error)
       }
     }
