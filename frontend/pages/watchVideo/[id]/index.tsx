@@ -4,13 +4,14 @@ import api from '../../../services/api'
 import styles from '../../../styles/WatchVideo.module.css'
 import { CommentById, VideoByID } from '../../../utils/types'
 import Head from 'next/head'
-import { ReactVideo } from 'reactjs-media'
 import { VideoCard } from '../../../components/VideoCard'
 import { useRouter } from 'next/router'
 import { Container } from 'react-bootstrap'
 import { ToastContainer, toast } from 'react-toastify'
 import { CommentInputBox } from '../../../components/CommentInputBox'
 import { CommentCard } from '../../../components/CommentCard'
+import { LionPlayer } from 'lion-player'
+import 'lion-player/dist/lion-skin.min.css'
 
 const WatchVideo = ({
   video,
@@ -42,13 +43,12 @@ const WatchVideo = ({
         <ToastContainer />
 
         <div className={styles.video}>
-          <ReactVideo
-            src={video.url}
-            poster={video.thumbnail}
-            primaryColor="red"
-            // other props
+          <LionPlayer
+            sources={{ src: video.url }}
+            autoplay="muted"
+            language="pt"
           />
-          <p className={styles.videoTitle}>{video.name}</p>
+          ,<p className={styles.videoTitle}>{video.name}</p>
         </div>
         <div className={styles.recommendations}>
           {recommendations &&

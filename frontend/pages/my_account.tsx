@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { Container, Nav } from 'react-bootstrap'
+import { Nav } from 'react-bootstrap'
 import styles from '../styles/MyAccount.module.css'
 import VideoUpload from '../components/video_upload'
+import UpdateUser from '../components/UpdateUser'
+
 import UserVideos from '../components/UserVideos'
 
 const MyAccount: React.FC = () => {
@@ -10,10 +12,10 @@ const MyAccount: React.FC = () => {
   const loadPage = () => {
     if (value === 'add_video') {
       return <VideoUpload />
-    }
-
-    if (value === 'my_videos') {
+    } else if (value === 'my_videos') {
       return <UserVideos />
+    } else {
+      return <UpdateUser />
     }
   }
   return (
@@ -21,12 +23,12 @@ const MyAccount: React.FC = () => {
       <Nav
         justify
         variant="tabs"
-        defaultActiveKey="my_account"
+        defaultActiveKey="my_data"
         onSelect={eventKey => setValue(eventKey)}
         className={styles.nav}
       >
         <Nav.Item>
-          <Nav.Link eventKey="my_account">Minha conta</Nav.Link>
+          <Nav.Link eventKey="my_data">Meus dados</Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link eventKey="my_videos">Meus videos</Nav.Link>

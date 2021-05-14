@@ -49,7 +49,7 @@ export default function UserVideos() {
   return (
     <>
       <Head>
-        <title>Buscar video</title>
+        <title>Meus Videos</title>
       </Head>
 
       {videos && !!videos.length ? (

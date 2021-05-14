@@ -72,7 +72,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch(':id')
+  @Patch()
   @UseInterceptors(
     FileInterceptor('profilePicture', {
       storage: diskStorage({
@@ -90,7 +90,6 @@ export class UserController {
   )
   async update(
     @Body() updateUserDto: UpdateUserDto,
-    @Param('id') id: string,
     @Request() req,
     @UploadedFile() profilePicture: Express.Multer.File,
   ) {
