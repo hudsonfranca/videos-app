@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Request,
   UnauthorizedException,
@@ -17,6 +18,7 @@ import { UserService } from './user.service';
 import { diskStorage } from 'multer';
 import { extname, resolve } from 'path';
 import * as crypto from 'crypto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -67,5 +69,35 @@ export class UserController {
   async findUsers() {
     const user = await this.userService.findUsers();
     return user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  @UseInterceptors(
+    FileInterceptor('profilePicture', {
+      storage: diskStorage({
+        destination: resolve(__dirname, '..', '..', 'uploads'),
+        filename: (req, file, cb) => {
+          crypto.randomBytes(16, (err, res) => {
+            if (err) {
+              return cb(err, null);
+            }
+            return cb(null, res.toString('hex') + extname(file.originalname));
+          });
+        },
+      }),
+    }),
+  )
+  async update(
+    @Body() updateUserDto: UpdateUserDto,
+    @Param('id') id: string,
+    @Request() req,
+    @UploadedFile() profilePicture: Express.Multer.File,
+  ) {
+    return await this.userService.update(
+      updateUserDto,
+      req.user,
+      profilePicture,
+    );
   }
 }

@@ -19,10 +19,14 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { extname, resolve } from 'path';
 import * as crypto from 'crypto';
+import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
 
   @Post('signup')
   @UseInterceptors(
@@ -74,7 +78,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('user')
   async authenticatedUser(@Request() req) {
-    return req.user;
+    return await this.userService.findUserById(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
