@@ -2,35 +2,19 @@
   width: 100%;
   height: auto;
   display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto 1fr auto auto;
-  grid-template-areas: "avatar author"
-                        "avatar comment"
-                        "avatar reply_button"
-                        "avatar reply_form";
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto 1fr ;
+  grid-template-areas: "avatar author delete_button"
+                        "avatar comment delete_button";
+
+
   justify-content: flex-start;
   margin-bottom: 4px;
   border-top: 1px solid #e5e5e5;
-margin-top: 10px;
+  padding: 10px;
 }
 
-.card_child{
-  width: 100%;
-  height: auto;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto 1fr auto auto;
-  grid-template-areas: "avatar author"
-                        "avatar comment"
-                        "avatar reply_button"
-                        "avatar reply_form";
-  justify-content: flex-start;
-  margin-bottom: 4px;
-  margin-left: 50px;
-  border-top: 1px solid #e5e5e5;
-  margin-top: 10px;
 
-}
 
 .avatar{
   grid-area: avatar;
@@ -40,20 +24,13 @@ margin-top: 10px;
   margin-right: 10px;
 }
 
-.avatar_child{
-  grid-area: avatar;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
+
 
 .comment{
   grid-area: comment;
   width: 100%;
   height: 100%;
   border-radius: 50%;
-
 }
 
 .comment span{
@@ -62,28 +39,21 @@ margin-top: 10px;
 }
 
 
-.buttons_container{
-  grid-area: reply_button;
+.delete_button{
+  grid-area: delete_button;
   width: 100%;
   height: 100%;
-
   font-size: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 10px;
+
 }
 
-.buttons_container img{
+.delete_button img{
   width: 25px;
   cursor: pointer;
 }
 
-.buttons_container p{
-  margin:0 5px 0 0;
-  cursor: pointer;
-}
 
-.reply_form{
-  grid-area: reply_form;
-}
+

@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { InferGetServerSidePropsType } from 'next'
 import api from '../../../services/api'
 import styles from '../../../styles/WatchVideo.module.css'
-import { VideoByID } from '../../../utils/types'
+import { CommentById, VideoByID } from '../../../utils/types'
 import Head from 'next/head'
 import { ReactVideo } from 'reactjs-media'
 import { VideoCard } from '../../../components/VideoCard'
 import { useRouter } from 'next/router'
-import { Comment } from '../../../components/Comment'
 import { Container } from 'react-bootstrap'
 import { ToastContainer, toast } from 'react-toastify'
 import { CommentInputBox } from '../../../components/CommentInputBox'
+import { CommentCard } from '../../../components/CommentCard'
 
 const WatchVideo = ({
   video,
@@ -18,7 +18,7 @@ const WatchVideo = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter()
 
-  const [comments, setComents] = useState<any>()
+  const [comments, setComents] = useState<CommentById[]>()
 
   const loadComments = async () => {
     try {
@@ -66,10 +66,9 @@ const WatchVideo = ({
           <CommentInputBox videoId={video.id} loadComments={loadComments} />
           {comments &&
             comments.map(comment => (
-              <Comment
-                key={comment.id}
+              <CommentCard
                 comment={comment}
-                type="root"
+                key={comment.id}
                 loadComments={loadComments}
               />
             ))}

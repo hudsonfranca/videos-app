@@ -72,8 +72,7 @@ export class VideoController {
 
   @Delete(':id')
   async Delete(@Param('id') id: string) {
-    const { affected } = await this.videoService.delete(id);
-    return affected;
+    return await this.videoService.delete(id);
   }
 
   @Get()
@@ -95,6 +94,13 @@ export class VideoController {
   @Get('search/by_name')
   async searchVideo(@Request() req) {
     const videos = await this.videoService.searchVideo(req.query.name);
+    return videos;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('search/by_user')
+  async searchVideoByUser(@Request() req) {
+    const videos = await this.videoService.searchVideosByUser(req.user.id);
     return videos;
   }
 }

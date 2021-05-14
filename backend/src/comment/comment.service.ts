@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
@@ -13,26 +15,16 @@ import { Comment } from './comment.entity';
 export class CommentService {
   constructor(
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
-    private videoService: VideoService,
+    @Inject(forwardRef(() => VideoService)) private videoService: VideoService,
   ) {}
 
-  async createComment(
-    comment: string,
-    videoId: string,
-    user: User,
-    parentId?: string,
-  ) {
+  async createComment(comment: string, videoId: string, user: User) {
     const video = await this.videoService.findById(videoId);
-
-    let parentComment: Comment;
-
-    if (parentId) parentComment = await this.commentById(parentId);
 
     const commentEntity = this.commentRepository.create({
       comment,
       video,
       user,
-      parent: parentComment && parentComment,
     });
 
     try {
@@ -47,94 +39,64 @@ export class CommentService {
   }
 
   async commentById(id: string) {
-    const comment = await this.commentRepository.findOne(id, {
-      relations: ['user', 'video', 'parent'],
-      order: { createdAt: -1 },
-    });
+    const comment = await this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .leftJoinAndSelect('comment.video', 'video')
+      .select([
+        'comment.id',
+        'comment.comment',
+        'user.id',
+        'user.username',
+        'user.email',
+        'user.profilePicture',
+        'video.id',
+        'video.name',
+        'video.url',
+        'video.thumbnail',
+      ])
+      .where('comment.id = :id', { id })
+      .getOne();
 
     if (!comment) throw new BadRequestException('Este commentário não existe.');
 
-    if (!comment.parent) {
-      delete comment.user.password;
-      return comment;
-    }
-
-    const childComment = await this.commentRepository.findOne(id, {
-      relations: ['user', 'video', 'parent', 'parent.user'],
-    });
-
-    delete childComment.parent.user.password;
-    delete childComment.user.password;
-
-    return childComment;
+    return comment;
   }
 
   async commentsByVideo(videoId: string) {
-    const manager = getManager();
-
-    const rootComments = await this.commentRepository
+    const comments = await this.commentRepository
       .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .leftJoinAndSelect('comment.video', 'video')
+      .select([
+        'comment.id',
+        'comment.comment',
+        'user.id',
+        'user.username',
+        'user.email',
+        'user.profilePicture',
+        'video.id',
+        'video.name',
+        'video.url',
+        'video.thumbnail',
+      ])
       .where('comment.videoId = :videoId', { videoId })
-      .andWhere('comment.parentId IS NULL')
       .getMany();
-
-    const repository = manager.getTreeRepository(Comment);
-
-    /* eslint-disable */
-    let comments: Comment[] = [];
-    /* eslint-enable */
-
-    for (const comment of rootComments) {
-      comments.push(await repository.findDescendantsTree(comment));
-    }
 
     return comments;
   }
 
   async deleteComment(id: string) {
-    await this.commentById(id);
-    const manager = getManager();
-    const repository = manager.getTreeRepository(Comment);
+    const comment = await this.commentById(id);
 
     try {
-      // Delete all the nodes from the closure table
-      await repository
-        .createQueryBuilder('comment')
-        .delete()
-        .from('comment_closure_closure')
-        .where(`"descendant_id" = :id`, { id })
-        .orWhere(`ancestor_id = :id`, { id })
-        .execute();
+      await this.commentRepository.remove(comment);
+      return true;
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(
+        'Não foi possível remover este comentário.',
+      );
     }
-
-    try {
-      // Set parent to null in the main table
-      if ('parent' && 'parentId') {
-        await repository
-          .createQueryBuilder('comment')
-          .update('comment', { ['parent']: null })
-          .where(`${'parent'} = :id`, { id })
-          .execute();
-      }
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-
-    try {
-      // Delete entity
-      await repository
-        .createQueryBuilder('comment')
-        .delete()
-        .from('comment')
-        .where(`id = :id`, { id })
-        .execute();
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-
-    return true;
   }
 
   async updateComment(id: string, content: string) {

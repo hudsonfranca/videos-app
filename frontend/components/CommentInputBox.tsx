@@ -10,17 +10,10 @@ const validationSchema = Yup.object({
 
 interface Props {
   videoId: string
-  parentId?: string
-  onCancel?: () => void
   loadComments?: () => void
 }
 
-export const CommentInputBox: React.FC<Props> = ({
-  parentId,
-  videoId,
-  onCancel,
-  loadComments
-}) => {
+export const CommentInputBox: React.FC<Props> = ({ videoId, loadComments }) => {
   const [user, setUser] = useState(false)
 
   useEffect(() => {
@@ -51,8 +44,7 @@ export const CommentInputBox: React.FC<Props> = ({
     onSubmit: async values => {
       try {
         await api.post(`/comment/video/${videoId}`, {
-          comment: values.comment,
-          parentId
+          comment: values.comment
         })
         resetForm()
         loadComments()
@@ -68,13 +60,16 @@ export const CommentInputBox: React.FC<Props> = ({
         <Col>
           <Form.Group>
             <Form.Control
-              isInvalid={!!errors.comment}
               value={values.comment}
               onChange={handleChange}
-              isValid={touched.comment && !errors.comment}
-              placeholder="Adicione um comentario público..."
+              placeholder={
+                user
+                  ? 'Adicione um comentario público...'
+                  : 'Crie uma conta ou faça o login para comentar...'
+              }
               name="comment"
               onBlur={handleBlur}
+              disabled={isSubmitting || !user}
             />
           </Form.Group>
         </Col>
@@ -86,8 +81,8 @@ export const CommentInputBox: React.FC<Props> = ({
             style={{ marginRight: '6px' }}
             onClick={() => {
               resetForm()
-              if (onCancel) onCancel()
             }}
+            disabled={isSubmitting || !user}
           >
             Cancelar
           </Button>

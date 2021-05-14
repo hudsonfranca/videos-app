@@ -4,21 +4,12 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  Tree,
-  TreeChildren,
-  TreeParent,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 
 @Entity()
-@Tree('closure-table', {
-  closureTableName: 'comment_closure',
-  ancestorColumnName: (colum) => `ancestor_${colum.propertyName}`,
-  descendantColumnName: (colum) => `descendant_${colum.propertyName}`,
-})
 export class Comment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -45,10 +36,4 @@ export class Comment {
     onUpdate: 'CASCADE',
   })
   video: Video;
-
-  @TreeChildren()
-  children: Comment[];
-
-  @TreeParent()
-  parent: Comment;
 }

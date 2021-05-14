@@ -136,7 +136,7 @@ const VideoUpload = () => {
       <Head>
         <title>Upload de video</title>
       </Head>
-      <Container className={styles.container} fluid>
+      <Container fluid>
         <ToastContainer />
         <Row className="justify-content-center h-100 align-items-center ">
           <Col lg={5} md={8} sm={11}>
@@ -148,7 +148,7 @@ const VideoUpload = () => {
             >
               <Row className="m-4">
                 <Col className="d-flex justify-content-center h-100 align-items-center mb-4">
-                  <h2>Upload de Video</h2>
+                  <p className={styles.title}>Upload de Video</p>
                 </Col>
               </Row>
               <Row>

@@ -19,9 +19,10 @@ export default function SearchVideo({
       <Head>
         <title>Buscar video</title>
       </Head>
-      <Container className={styles.container} fluid>
-        {videos &&
-          videos.map(({ name, thumbnail, id }) => (
+
+      {videos.length ? (
+        <Container className={styles.container} fluid>
+          {videos.map(({ name, thumbnail, id }) => (
             <VideoCard
               key={id}
               name={name}
@@ -30,7 +31,12 @@ export default function SearchVideo({
               handleClick={() => router.push(`/watchVideo/${id}`)}
             />
           ))}
-      </Container>
+        </Container>
+      ) : (
+        <div className={styles.empty}>
+          <p>Nenhum resultado encontrado</p>
+        </div>
+      )}
     </>
   )
 }

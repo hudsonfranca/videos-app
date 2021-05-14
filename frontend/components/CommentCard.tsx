@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Button } from 'react-bootstrap'
 import api from '../services/api'
 import styles from '../styles/CommentCard.module.css'
 import { CommentById, CurrentUser } from '../utils/types'
-import { CommentInputBox } from './CommentInputBox'
 
 interface Props {
-  commentById: CommentById
-  isRoot: boolean
+  comment: CommentById
   loadComments?: () => void
 }
 
-export const CommentCard: React.FC<Props> = ({
-  commentById,
-  isRoot,
-  loadComments
-}) => {
-  const [showCommentBox, setShowCommentBox] = useState(false)
-
+export const CommentCard: React.FC<Props> = ({ comment, loadComments }) => {
   const [user, setUser] = useState<CurrentUser>()
 
   useEffect(() => {
@@ -32,10 +23,6 @@ export const CommentCard: React.FC<Props> = ({
     currentUser()
   }, [])
 
-  const onCancel = () => {
-    setShowCommentBox(false)
-  }
-
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/comment/${id}`)
@@ -46,35 +33,21 @@ export const CommentCard: React.FC<Props> = ({
   }
 
   return (
-    <div className={isRoot ? styles.card : styles.card_child}>
+    <div className={styles.card}>
       <img
-        className={isRoot ? styles.avatar : styles.avatar_child}
-        src={commentById.user.profilePicture}
+        className={styles.avatar}
+        src={comment.user.profilePicture}
         alt="avatar"
       />
-      <strong>{commentById.user.username}</strong>
-      <p className={styles.comment}>
-        <span>{commentById.parent?.user.username}</span>
-        {commentById.comment}
-      </p>
-      <div className={styles.buttons_container}>
-        <p onClick={() => setShowCommentBox(true)}> Responder</p>
-        {user && commentById.user.id === user.id && (
+      <strong>{comment.user.username}</strong>
+      <p className={styles.comment}>{comment.comment}</p>
+      <div className={styles.delete_button}>
+        {user && comment.user.id === user.id && (
           <img
-            className={isRoot ? styles.avatar : styles.avatar_child}
+            className={styles.avatar}
             src="/delete.svg"
             alt="deletar comentário"
-            onClick={() => handleDelete(commentById.id)}
-          />
-        )}
-      </div>
-      <div className={styles.reply_form}>
-        {showCommentBox && (
-          <CommentInputBox
-            videoId={commentById.video.id}
-            onCancel={onCancel}
-            parentId={commentById.id}
-            loadComments={loadComments}
+            onClick={() => handleDelete(comment.id)}
           />
         )}
       </div>

@@ -2,10 +2,13 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CommentService } from '../comment/comment.service';
 import { User } from 'src/user/user.entity';
-import { Video_Tag } from 'src/video-tag/video-tag.entity';
+import { Video_Tag } from '../video-tag/video-tag.entity';
 import { Repository } from 'typeorm';
 import { Video } from './video.entity';
 
@@ -15,6 +18,8 @@ export class VideoService {
     @InjectRepository(Video) private videoRepository: Repository<Video>,
     @InjectRepository(Video_Tag)
     private videoTagRepository: Repository<Video_Tag>,
+    @Inject(forwardRef(() => CommentService))
+    private commentService: CommentService,
   ) {}
 
   async videoUpload(
@@ -78,7 +83,14 @@ export class VideoService {
   async delete(id: string) {
     const video = await this.findById(id);
 
-    return await this.videoRepository.delete(id);
+    try {
+      await this.videoRepository.remove(video);
+      return true;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Não foi possível deletar este video.',
+      );
+    }
   }
 
   async videosByTag(tags: string[]) {
@@ -103,6 +115,22 @@ export class VideoService {
         'video.thumbnail',
       ])
       .where('name ILIKE :name', { name: `%${name}%` })
+      .getMany();
+
+    return videos;
+  }
+
+  async searchVideosByUser(userId: string) {
+    const videos = await this.videoRepository
+      .createQueryBuilder('video')
+      .select([
+        'video.id',
+        'video.name',
+        'video.filename',
+        'video.url',
+        'video.thumbnail',
+      ])
+      .where('video.user.id = :userId', { userId })
       .getMany();
 
     return videos;

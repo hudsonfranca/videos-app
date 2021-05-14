@@ -8,7 +8,7 @@ export const Layout: React.FC = ({ children }) => {
     <>
       <Header />
       <Container fluid className="vw-100  p-0 m-0">
-        <main className="vw-100 " style={{ marginTop: '56px' }}>
+        <main className="vw-100 " style={{ marginTop: '73px' }}>
           {children}
         </main>
       </Container>

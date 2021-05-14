@@ -20,3 +20,7 @@
   width: 100%;
   height: 153px;
 }
+
+.delete_button img{
+color: #f8f9fa;
+}

@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color:#fff;
+  width: 100vw;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+.nav{
+  margin-top: 100px;
+}

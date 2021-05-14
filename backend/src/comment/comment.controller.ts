@@ -29,7 +29,6 @@ export class CommentController {
       comment.comment,
       video_id,
       req.user,
-      comment.parentId,
     );
 
     return savedComment;
