@@ -7,7 +7,6 @@ import Link from 'next/link'
 import api from '../services/api'
 import { useRouter } from 'next/router'
 import { ToastContainer, toast } from 'react-toastify'
-import styles from '../styles/Login.module.css'
 
 const validationSchema = Yup.object({
   email: Yup.string().email('email invalido').required('campo obrigatório'),

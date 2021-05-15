@@ -8,6 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  AfterLoad,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 
@@ -27,6 +28,12 @@ export class Video {
 
   @Column({ nullable: false, type: 'varchar' })
   thumbnail: string;
+
+  @AfterLoad()
+  addHostUrl() {
+    this.thumbnail = `${process.env.BACKEND_HOST}${this.thumbnail}`;
+    this.url = `${process.env.BACKEND_HOST}${this.url}`;
+  }
 
   @CreateDateColumn()
   createdAt: Date;

@@ -29,17 +29,15 @@ export class VideoService {
     tags: string[],
     name: string,
   ) {
-    const hostUrl = 'http://localhost:4000/uploads/';
-
     const videoTags = tags.map((tag) =>
       this.videoTagRepository.create({ tag: tag }),
     );
 
     const videoEntity = this.videoRepository.create({
       name,
-      url: `${hostUrl}${video.filename}`,
+      url: `/uploads/${video.filename}`,
       filename: video.filename,
-      thumbnail: `${hostUrl}${thumbnail.filename}`,
+      thumbnail: `/uploads/${thumbnail.filename}`,
     });
 
     videoEntity.user = user;
@@ -50,7 +48,7 @@ export class VideoService {
         vt.video = savedVideo;
         await this.videoTagRepository.save(vt);
       });
-      return savedVideo;
+      return this.findById(savedVideo.id);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(

@@ -7,7 +7,6 @@ import Head from 'next/head'
 import { VideoCard } from '../../../components/VideoCard'
 import { useRouter } from 'next/router'
 import { Container } from 'react-bootstrap'
-import { ToastContainer, toast } from 'react-toastify'
 import { CommentInputBox } from '../../../components/CommentInputBox'
 import { CommentCard } from '../../../components/CommentCard'
 import { LionPlayer } from 'lion-player'
@@ -40,13 +39,13 @@ const WatchVideo = ({
         <title>{video.name}</title>
       </Head>
       <Container className={styles.container} fluid>
-        <ToastContainer />
-
         <div className={styles.video}>
           <LionPlayer
             sources={{ src: video.url }}
             autoplay="muted"
             language="pt"
+            nativeControlsForTouch
+            fluid
           />
           ,<p className={styles.videoTitle}>{video.name}</p>
         </div>

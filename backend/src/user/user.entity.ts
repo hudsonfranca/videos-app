@@ -7,6 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  AfterLoad,
 } from 'typeorm';
 
 @Entity()
@@ -25,6 +26,11 @@ export class User {
 
   @Column({ nullable: true, type: 'varchar' })
   profilePicture: string;
+
+  @AfterLoad()
+  addHostUrl() {
+    this.profilePicture = `${process.env.BACKEND_HOST}${this.profilePicture}`;
+  }
 
   @CreateDateColumn()
   createdAt: Date;

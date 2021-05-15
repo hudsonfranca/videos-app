@@ -23,8 +23,6 @@ export class UserService {
   ): Promise<User> {
     const { email, password, username } = params;
 
-    const hostUrl = 'http://localhost:4000/uploads/';
-
     const userEmail = await this.userRepository.findOne({ email });
 
     if (userEmail)
@@ -36,7 +34,7 @@ export class UserService {
       email,
       username,
       password: hash,
-      profilePicture: `${hostUrl}${profilePicture.filename}`,
+      profilePicture: `/uploads/${profilePicture.filename}`,
     });
 
     const user = await this.userRepository.save(userEntity);
@@ -70,8 +68,6 @@ export class UserService {
     user: User,
     profilePicture: Express.Multer.File,
   ) {
-    const hostUrl = 'http://localhost:4000/uploads/';
-
     user.username = updateUserDto.username
       ? updateUserDto.username
       : user.username;
@@ -86,7 +82,7 @@ export class UserService {
     user.email = updateUserDto.email ? updateUserDto.email : user.email;
 
     user.profilePicture = profilePicture
-      ? `${hostUrl}${profilePicture.filename}`
+      ? `/uploads/${profilePicture.filename}`
       : user.profilePicture;
 
     try {

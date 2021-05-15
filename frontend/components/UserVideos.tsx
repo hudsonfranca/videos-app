@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/UserVideos.module.css'
-import { Card, Container } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 import { VideoCard } from '../components/VideoCard'
-import { CurrentUser, Video } from '../utils/types'
+import { Video } from '../utils/types'
 import { useRouter } from 'next/router'
 import api from '../services/api'
 

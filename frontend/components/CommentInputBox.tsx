@@ -32,8 +32,6 @@ export const CommentInputBox: React.FC<Props> = ({ videoId, loadComments }) => {
     handleChange,
     handleSubmit,
     values,
-    touched,
-    errors,
     resetForm,
     isSubmitting
   } = useFormik({
