@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentService } from '../comment/comment.service';
-import { User } from 'src/user/user.entity';
+import { User } from '../user/user.entity';
 import { Video_Tag } from '../video-tag/video-tag.entity';
 import { Repository } from 'typeorm';
 import { Video } from './video.entity';

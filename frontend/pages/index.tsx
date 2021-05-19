@@ -11,13 +11,17 @@ export default function Home() {
   const [videos, setVideos] = useState<Video[]>()
 
   const router = useRouter()
-
-  useEffect(() => {
-    const findVideos = async () => {
+  const findVideos = async () => {
+    try {
       const { data } = await api.get('/video/index/all')
 
       setVideos(data)
+    } catch (error) {
+      console.log(error)
     }
+  }
+
+  useEffect(() => {
     findVideos()
   }, [])
 

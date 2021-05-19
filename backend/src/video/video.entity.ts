@@ -1,5 +1,5 @@
-import { Comment } from 'src/comment/comment.entity';
-import { Video_Tag } from 'src/video-tag/video-tag.entity';
+import { Comment } from '../comment/comment.entity';
+import { Video_Tag } from '../video-tag/video-tag.entity';
 import {
   Column,
   CreateDateColumn,

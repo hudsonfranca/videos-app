@@ -6,9 +6,9 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/user/user.entity';
-import { VideoService } from 'src/video/video.service';
-import { Repository, getManager } from 'typeorm';
+import { User } from '../user/user.entity';
+import { VideoService } from '../video/video.service';
+import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
 
 @Injectable()

@@ -15,7 +15,7 @@ import { VideoService } from './video.service';
 import { diskStorage } from 'multer';
 import { extname, resolve } from 'path';
 import * as crypto from 'crypto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('video')
 export class VideoController {

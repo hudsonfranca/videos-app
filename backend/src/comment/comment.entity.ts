@@ -1,4 +1,4 @@
-import { Video } from 'src/video/video.entity';
+import { Video } from '../video/video.entity';
 import {
   Column,
   CreateDateColumn,
