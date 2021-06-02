@@ -11,7 +11,6 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({ credentials: true, origin: true });
 
-  app.setGlobalPrefix('api');
   app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')));
 
   await app.listen(process.env.PORT);

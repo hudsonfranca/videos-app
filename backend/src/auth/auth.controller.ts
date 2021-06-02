@@ -56,7 +56,6 @@ export class AuthController {
 
     response.cookie('authorization', `${access_token}`, {
       httpOnly: false,
-      expires: new Date(Date.now() + 9999999),
     });
 
     return user;
@@ -68,8 +67,7 @@ export class AuthController {
     const { access_token } = await this.authService.login(req.user);
 
     response.cookie('authorization', `${access_token}`, {
-      httpOnly: false,
-      expires: new Date(Date.now() + 9999999),
+      httpOnly: false,  
     });
 
     return { message: 'success' };

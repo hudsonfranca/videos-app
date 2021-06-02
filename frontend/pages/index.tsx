@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import api from '../services/api'
@@ -6,24 +6,12 @@ import { Container } from 'react-bootstrap'
 import { VideoCard } from '../components/VideoCard'
 import { Video } from '../utils/types'
 import { useRouter } from 'next/router'
+import { InferGetServerSidePropsType } from 'next'
 
-export default function Home() {
-  const [videos, setVideos] = useState<Video[]>()
-
+export default function Home({
+  videos
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter()
-  const findVideos = async () => {
-    try {
-      const { data } = await api.get('/video/index/all')
-
-      setVideos(data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  useEffect(() => {
-    findVideos()
-  }, [])
 
   return (
     <>
@@ -44,4 +32,14 @@ export default function Home() {
       </Container>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  const { data: videos } = await api.get<Video[]>('/video/index/all')
+
+  return {
+    props: {
+      videos
+    }
+  }
 }

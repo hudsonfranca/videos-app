@@ -1,0 +1,15 @@
+jwtKey: and0a2V5MTIzNDU=
+
+database:
+  password: YWRtaW4=
+  user: admin
+  port: 5432
+  database: postgres
+  host: database-service
+
+  backend:
+    tag: latest
+
+  frontend:
+    tag: latest
+    backendUrl: 

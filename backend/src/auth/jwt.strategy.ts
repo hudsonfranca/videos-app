@@ -10,7 +10,7 @@ const cookieExtractor = function (req: Request) {
   if (req && req.cookies['authorization']) {
     token = req.cookies['authorization'];
   }
-
+  
   return token;
 };
 
@@ -19,8 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private userService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-      ignoreExpiration: false,
-      secretOrKey: process.env.JWT_KEY,
+      ignoreExpiration: true,
+      secretOrKey:"c2VjcmV0",
     });
   }
 

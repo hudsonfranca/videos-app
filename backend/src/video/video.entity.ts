@@ -31,8 +31,8 @@ export class Video {
 
   @AfterLoad()
   addHostUrl() {
-    this.thumbnail = `${process.env.BACKEND_HOST}${this.thumbnail}`;
-    this.url = `${process.env.BACKEND_HOST}${this.url}`;
+    this.thumbnail = `http://videosapp/api/${this.thumbnail}`;
+    this.url = `http://videosapp/api/${this.url}`;
   }
 
   @CreateDateColumn()
