@@ -35,4 +35,13 @@
   }
 }
 
+.form{
+display: grid;
+grid-template-columns: 1fr auto;
+}
+
+.my_account{
+  display: flex;
+  align-items: center;
+  }
 

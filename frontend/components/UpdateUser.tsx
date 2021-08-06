@@ -25,7 +25,7 @@ const UpdateUser: React.FC = () => {
   useEffect(() => {
     const currentUser = async () => {
       try {
-        await api.get<CurrentUser>('/auth/user')
+        await api().get<CurrentUser>('/auth/user')
       } catch (error) {
         console.error(error)
         router.push('/login')
@@ -68,7 +68,7 @@ const UpdateUser: React.FC = () => {
       formData.append('profilePicture', values.profilePicture)
 
       try {
-        await api.patch('/user', formData)
+        await api().patch('/user', formData)
         notifySuccess()
         resetForm()
       } catch (error) {
@@ -83,7 +83,7 @@ const UpdateUser: React.FC = () => {
       <Head>
         <title>Atualizar dados</title>
       </Head>
-      <Container className="vh-100 pe-5 p-0 m-0" fluid>
+      <Container className="min-vh-100 pe-5 p-0 m-0" fluid>
         <ToastContainer />
 
         <Row className="justify-content-center h-100 align-items-center ">

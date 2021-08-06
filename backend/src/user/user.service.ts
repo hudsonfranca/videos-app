@@ -7,7 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 
@@ -37,9 +36,14 @@ export class UserService {
       profilePicture: `/uploads/${profilePicture.filename}`,
     });
 
-    const user = await this.userRepository.save(userEntity);
+    try {
+      const user = await this.userRepository.save(userEntity);
 
-    return await this.findUserById(user.id);
+      return await this.findUserById(user.id);
+    } catch (error) {
+      throw new InternalServerErrorException("Não foi possível cadastrar o usuário.")
+    }
+    
   }
 
   async findUserById(id: string): Promise<User> {

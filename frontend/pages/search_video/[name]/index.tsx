@@ -41,7 +41,7 @@ export default function SearchVideo({
 }
 
 export async function getServerSideProps(context) {
-  const { data: videos } = await api.get<Video[]>(
+  const { data: videos } = await api().get<Video[]>(
     `/video/search/by_name?name=${context.params.name}`
   )
 

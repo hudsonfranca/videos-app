@@ -19,7 +19,7 @@ export const CommentInputBox: React.FC<Props> = ({ videoId, loadComments }) => {
   useEffect(() => {
     const currentUser = async () => {
       try {
-        const user = await api.get('/auth/user')
+        const user = await api().get('/auth/user')
         if (user) setUser(true)
       } catch (error) {
         console.error(error)
@@ -41,7 +41,7 @@ export const CommentInputBox: React.FC<Props> = ({ videoId, loadComments }) => {
     validationSchema,
     onSubmit: async values => {
       try {
-        await api.post(`/comment/video/${videoId}`, {
+        await api().post(`/comment/video/${videoId}`, {
           comment: values.comment
         })
         resetForm()

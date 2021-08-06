@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   Body,
   UploadedFiles,
+  Res,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { VideoService } from './video.service';
@@ -16,10 +17,12 @@ import { diskStorage } from 'multer';
 import { extname, resolve } from 'path';
 import * as crypto from 'crypto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import {Response} from "express"
 
 @Controller('video')
 export class VideoController {
   constructor(private videoService: VideoService) {}
+  
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -68,6 +71,12 @@ export class VideoController {
   async findById(@Param('id') id: string) {
     const video = await this.videoService.findById(id);
     return video;
+  }
+
+  @Get('stream/:filename')
+  async videoStream(@Res() res:Response,@Param('filename') fileName: string) {
+    const videoStream = await this.videoService.videoStream(fileName);
+    videoStream.pipe(res)
   }
 
   @Delete(':id')

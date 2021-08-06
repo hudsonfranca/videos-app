@@ -31,7 +31,7 @@ const Signup: React.FC = () => {
   useEffect(() => {
     const currentUser = async () => {
       try {
-        await api.get('/auth/user')
+        await api().get('/auth/user')
         router.push('/')
       } catch (error) {
         console.error(error)
@@ -70,10 +70,15 @@ const Signup: React.FC = () => {
       formData.append('profilePicture', values.profilePicture)
 
       try {
-        await api.post('/auth/signup', formData)
+        await api().post('/auth/signup', formData)
         router.reload()
-      } catch (error) {
-        console.error(error)
+      } catch ({ response: { data } }) {
+        const notifyEmailError = () => {
+          toast.error(`${values.email} já está em uso.`)
+        }
+        if (data.statusCode === 409) {
+          return notifyEmailError()
+        }
         notifyError()
       }
     }
@@ -84,7 +89,7 @@ const Signup: React.FC = () => {
       <Head>
         <title>Cadastre-se</title>
       </Head>
-      <Container className="vh-100 pe-5 p-0 m-0" fluid>
+      <Container className="min-vh-100 pe-5 p-0 m-0" fluid>
         <ToastContainer />
 
         <Row className="justify-content-center h-100 align-items-center ">
@@ -92,7 +97,7 @@ const Signup: React.FC = () => {
             <Form
               noValidate
               onSubmit={handleSubmit}
-              className="shadow-lg p-5 rounded-3 "
+              className="border border-1 p-5 rounded-3 "
             >
               <Row className="m-4">
                 <Col className="d-flex justify-content-center h-100 align-items-center mb-4">

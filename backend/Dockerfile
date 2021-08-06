@@ -3,14 +3,15 @@ FROM node:12.19.0-alpine3.9 AS development
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY yarn.lock ./
 
-RUN npm install glob rimraf
+RUN yarn add glob rimraf
 
-RUN npm install --only=development
+RUN yarn install --production=false
 
 COPY . .
 
-RUN npm run build
+RUN yarn build
 
 FROM node:12.19.0-alpine3.9 as production
 
@@ -20,8 +21,9 @@ ENV NODE_ENV=${NODE_ENV}
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY yarn.lock ./
 
-RUN npm install --only=production
+RUN yarn install --production=true
 
 COPY . .
 

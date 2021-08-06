@@ -9,7 +9,7 @@ import * as Yup from 'yup'
 import { ToastContainer, toast } from 'react-toastify'
 
 const IMAGE_FORMATS = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png']
-const VIDEO_FORMATS = ['video/mp4', 'video/WebM']
+const VIDEO_FORMATS = ['video/mp4', 'video/webm']
 
 const validationSchema = Yup.object({
   name: Yup.string().required('campo obrigatório'),
@@ -43,7 +43,7 @@ const VideoUpload = () => {
   useEffect(() => {
     const currentUser = async () => {
       try {
-        await api.get('/auth/user')
+        await api().get('/auth/user')
       } catch (error) {
         console.error(error)
         router.push('/login')
@@ -88,7 +88,7 @@ const VideoUpload = () => {
       formData.append('name', name)
       formData.append('tags', tagArray.join())
       try {
-        await api.post('/video', formData)
+        await api().post('/video', formData)
         notifySuccess()
         resetForm()
         setTagArray([])
@@ -114,6 +114,11 @@ const VideoUpload = () => {
       setTagArray(oldvalue => [...oldvalue, tag])
       setTag('')
     }
+  }
+
+  const addtag = () => {
+    setTagArray(oldvalue => [...oldvalue, tag])
+    setTag('')
   }
 
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -234,7 +239,9 @@ const VideoUpload = () => {
                         />
                       </div>
                     </div>
-                    <small>precione ENTER para adiconar a tag</small>
+                    <Button block variant="secondary" onClick={() => addtag()}>
+                      Adicionar tag
+                    </Button>
                   </Form.Group>
                 </Col>
               </Row>
@@ -255,7 +262,7 @@ const VideoUpload = () => {
                         aria-hidden="true"
                       />
                     )}
-                    {isSubmitting ? '  ...' : 'OK'}
+                    {isSubmitting ? '  ...' : 'Enviar video'}
                   </Button>
                 </Col>
               </Row>

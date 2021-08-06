@@ -14,7 +14,7 @@ export default function UserVideos() {
   useEffect(() => {
     const currentUser = async () => {
       try {
-        await api.get('/auth/user')
+        await api().get('/auth/user')
       } catch (error) {
         console.error(error)
         router.push('/login')
@@ -25,7 +25,7 @@ export default function UserVideos() {
 
   const videosByUser = async () => {
     try {
-      const { data } = await api.get<Video[]>('/video/search/by_user')
+      const { data } = await api().get<Video[]>('/video/search/by_user')
       if (data) setVideos(data)
     } catch (error) {
       console.error(error)
@@ -38,7 +38,7 @@ export default function UserVideos() {
 
   const handleDelete = async (id: string) => {
     try {
-      await api.delete(`/video/${id}`)
+      await api().delete(`/video/${id}`)
       videosByUser()
     } catch (error) {
       console.log(error)

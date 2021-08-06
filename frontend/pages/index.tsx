@@ -35,7 +35,7 @@ export default function Home({
 }
 
 export async function getServerSideProps(context) {
-  const { data: videos } = await api.get<Video[]>('/video/index/all')
+  const { data: videos } = await api().get<Video[]>('/video/index/all')
 
   return {
     props: {

@@ -54,7 +54,7 @@ export const VideoCard: React.FC<Props> = ({
         className={styles.image}
         onClick={handleClick}
       />
-      <p>{name}</p>
+      <p style={{ padding: '5px' }}>{name}</p>
       {deleteButton && (
         <Button
           variant="danger"

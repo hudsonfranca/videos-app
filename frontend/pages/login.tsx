@@ -19,7 +19,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     const currentUser = async () => {
       try {
-        await api.get('/auth/user')
+        await api().get('/auth/user')
         router.push('/')
       } catch (error) {
         console.error(error)
@@ -48,7 +48,7 @@ const Login: React.FC = () => {
     validationSchema,
     onSubmit: async values => {
       try {
-        await api.post('/auth/login', {
+        await api().post('/auth/login', {
           email: values.email,
           password: values.password
         })
@@ -73,7 +73,7 @@ const Login: React.FC = () => {
             <Form
               noValidate
               onSubmit={handleSubmit}
-              className="shadow-lg p-5 rounded-3 "
+              className="border border-1 p-5 rounded-3 "
             >
               <Row className="m-4">
                 <Col className="d-flex justify-content-center h-100 align-items-center mb-4">

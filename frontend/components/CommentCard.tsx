@@ -14,7 +14,7 @@ export const CommentCard: React.FC<Props> = ({ comment, loadComments }) => {
   useEffect(() => {
     const currentUser = async () => {
       try {
-        const { data } = await api.get<CurrentUser>('/auth/user')
+        const { data } = await api().get<CurrentUser>('/auth/user')
         if (data) setUser(data)
       } catch (error) {
         console.error(error)
@@ -25,7 +25,7 @@ export const CommentCard: React.FC<Props> = ({ comment, loadComments }) => {
 
   const handleDelete = async (id: string) => {
     try {
-      await api.delete(`/comment/${id}`)
+      await api().delete(`/comment/${id}`)
       loadComments()
     } catch (error) {
       console.log(error)

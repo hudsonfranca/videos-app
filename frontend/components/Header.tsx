@@ -13,7 +13,7 @@ export const Header: React.FC = () => {
 
   const logout = async () => {
     try {
-      await api.get('/auth/logout')
+      await api().get('/auth/logout')
       router.reload()
     } catch (error) {
       console.error(error)
@@ -22,7 +22,7 @@ export const Header: React.FC = () => {
   useEffect(() => {
     const currentUser = async () => {
       try {
-        const { data } = await api.get<CurrentUser>('/auth/user')
+        const { data } = await api().get<CurrentUser>('/auth/user')
         if (data) setUser(data)
       } catch (error) {
         console.error(error)
@@ -35,7 +35,8 @@ export const Header: React.FC = () => {
       bg="light"
       variant="light"
       fixed="top"
-      expand="sm"
+      collapseOnSelect
+      expand="lg"
       className={styles.header}
     >
       <Navbar.Brand
@@ -54,14 +55,15 @@ export const Header: React.FC = () => {
               if (searchValue !== '')
                 router.push(`/search_video/${searchValue}`)
             }}
+            className={styles.form}
           >
             <FormControl
               type="text"
               placeholder="Pesquisar..."
-              className="mr-sm-1"
               value={searchValue}
               onChange={e => setSearchValue(e.target.value)}
             />
+
             <Button variant="light" type="submit">
               <img src="/search.svg" alt="search icon" />
             </Button>
@@ -70,8 +72,10 @@ export const Header: React.FC = () => {
         <Nav className=" justify-content-end">
           {!user && (
             <>
-              <Nav.Link onClick={() => router.push('/login')}>Login</Nav.Link>
-              <Nav.Link onClick={() => router.push('/signup')}>
+              <Nav.Link eventKey="1" onClick={() => router.push('/login')}>
+                Login
+              </Nav.Link>
+              <Nav.Link eventKey="2" onClick={() => router.push('/signup')}>
                 Cadastre-se
               </Nav.Link>
             </>
@@ -79,10 +83,19 @@ export const Header: React.FC = () => {
 
           {user && (
             <>
-              <Nav.Link onClick={() => router.push('/my_account')}>
+              <Nav.Link
+                onClick={() => router.push('/my_account')}
+                className={styles.my_account}
+                eventKey="3"
+              >
                 <img src={user.profilePicture} className={styles.avatar} />
+                Minha conta
               </Nav.Link>
-              <Nav.Link onClick={logout} className="d-flex align-items-center">
+              <Nav.Link
+                onClick={logout}
+                eventKey="4"
+                className="d-flex align-items-center"
+              >
                 Sair
               </Nav.Link>
             </>
