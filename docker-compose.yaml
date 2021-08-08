@@ -29,6 +29,8 @@ services:
       - PG_PASSWORD=password
       - PG_DATABASE=postgres
       - BACKEND_URL=http://localhost:4000
+      - JWT_KEY=c2VjcmV0
+      - PORT=4000
     ports: 
       - "4000:4000"
     command: npm run start:dev
