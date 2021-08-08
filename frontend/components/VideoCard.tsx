@@ -22,6 +22,16 @@ export const VideoCard: React.FC<Props> = ({
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
+
+ const truncatedVideoName = (source) => {
+    let skippedString = source.trimEnd();
+    if(skippedString.length > 43){
+        return skippedString.substring(0, 43) + '...';
+    }else{
+        return source;
+    }
+}
+
   return (
     <div className={styles.card}>
       <Modal show={show} onHide={handleClose}>
@@ -54,7 +64,7 @@ export const VideoCard: React.FC<Props> = ({
         className={styles.image}
         onClick={handleClick}
       />
-      <p style={{ padding: '5px' }}>{name}</p>
+      <p style={{ padding: '5px' }}>{truncatedVideoName(name)}</p>
       {deleteButton && (
         <Button
           variant="danger"

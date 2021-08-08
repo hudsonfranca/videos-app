@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useCallback } from 'react'
 import { InferGetServerSidePropsType } from 'next'
 import api from '../../../services/api'
 import styles from '../../../styles/WatchVideo.module.css'
@@ -20,6 +20,8 @@ const WatchVideo = ({
   const router = useRouter()
 
   const [comments, setComents] = useState<CommentById[]>()
+
+
 
   const loadComments = async () => {
     try {
@@ -51,6 +53,8 @@ const WatchVideo = ({
             poster={video.thumbnail}
             controls={true}
             aspectRatio="16:9"
+            liveui={false}
+
           />
           ,<p className={styles.videoTitle}>{video.name}</p>
         </div>
